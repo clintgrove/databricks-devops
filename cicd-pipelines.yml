@@ -2,10 +2,11 @@ trigger:
     - main
 
 variables:
+  - template: .\env-variables.yml
     
   - name: vmImageName
     value: "windows-latest"
-  - name: notebooksPath # Azure databricks folder path, we created a folder called notebook to store only the notebooks
+  - name: notebooksPath
     value: "notebook"
 
 pool:
@@ -13,24 +14,22 @@ pool:
 
 stages:
  - stage: DoingDBRickstuff
-   variables:
-    - template: .\env-variables.yml # 
    jobs:
-    - template: templates/deploy-notebooks.yml # referring to templates folder inside CICD folder
+    - template: templates/deploy-notebooks.yml
       parameters:
-      stageId: "Deploy_to_Dev_Environment" # CI part
-      env: "dev"
-      environmentName: ${{ variables.dev-environment-name }} #create in pipeline variable group dbw-cicd-dev ("dev-environment-databricks-cicd")
-      resourceGroupName: ${{ variables.dev-resource-group-name }} #create in pipeline variable group dbw-cicd-dev and define value
-      serviceConnection: ${{ variables.dev-service-connection-name }} #create in pipeline variable group dbw-cicd-dev ("dev-service-connection")
-      notebooksPath: $(notebooksPath)
+        stageId: "Deploy_to_Dev_Environment"
+        env: "dev"
+        environmentName: ${{ variables['dev-environment-name'] }}
+        resourceGroupName: ${{ variables['dev-resource-group-name'] }}
+        serviceConnection: ${{ variables['dev-service-connection-name'] }}
+        notebooksPath: ${{ variables.notebooksPath }}
     
-    - template: templates/deploy-notebooks.yml # referring to templates folder inside CICD folder
+    - template: templates/deploy-notebooks.yml
       parameters:
-      dependsOn: ["Deploy_to_Dev_Environment"]
-      stageId: "Deploy_to_PROD_Environment" # CI part
-      env: "prod"
-      environmentName: ${{ variables.prod-environment-name }} #create in pipeline variable group dbw-cicd-dev ("prod-environment-databricks-cicd")
-      resourceGroupName: ${{ variables.prod-resource-group-name }} #create in pipeline variable group dbw-cicd-dev and define value
-      serviceConnection: ${{ variables.prod-service-connection-name }} #create in pipeline variable group dbw-cicd-dev ("prod-service-connection")
-      notebooksPath: $(notebooksPath) # stays same because notebook folder source is same
+        dependsOn: ["Deploy_to_Dev_Environment"]
+        stageId: "Deploy_to_PROD_Environment"
+        env: "prod"
+        environmentName: ${{ variables['prod-environment-name'] }}
+        resourceGroupName: ${{ variables['prod-resource-group-name'] }}
+        serviceConnection: ${{ variables['prod-service-connection-name'] }}
+        notebooksPath: ${{ variables.notebooksPath }}
