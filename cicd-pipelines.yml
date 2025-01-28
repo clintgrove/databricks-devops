@@ -10,7 +10,7 @@ variables:
     value: "notebook"
 
 pool:
-  vmImage: ${{ variables.vmImageName }}
+  vmImage:  $(vmImageName)
 
 stages:
  - stage: DoingDBRickstuff
@@ -22,7 +22,7 @@ stages:
         environmentName: ${{ variables['dev-environment-name'] }}
         resourceGroupName: ${{ variables['dev-resource-group-name'] }}
         serviceConnection: ${{ variables['dev-service-connection-name'] }}
-        notebooksPath: ${{ variables.notebooksPath }}
+        notebooksPath: $(notebooksPath)
     
     - template: templates/deploy-notebooks.yml
       parameters:
@@ -32,4 +32,4 @@ stages:
         environmentName: ${{ variables['prod-environment-name'] }}
         resourceGroupName: ${{ variables['prod-resource-group-name'] }}
         serviceConnection: ${{ variables['prod-service-connection-name'] }}
-        notebooksPath: ${{ variables.notebooksPath }}
+        notebooksPath: $(notebooksPath)
