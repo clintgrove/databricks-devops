@@ -1,9 +1,9 @@
 variables:
   dev-environment-name :  'dev'
-  dev-resource-group-name :  'analytics'
-  dev-service-connection-name :  'dev-service-connection'
+  dev-resource-group-name :  'dbr-analytics-dev'
+  dev-service-connection-name :  'clintazrealallrgs'
 
 
   prod-environment-name :  'prod'
-  prod-resource-group-name :  'analytics-prod'
-  prod-service-connection-name :  'prod-service-connection'
+  prod-resource-group-name :  'dbr-analytics-prod'
+  prod-service-connection-name :  'clintazrealallrgs'
