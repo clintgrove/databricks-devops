@@ -2,7 +2,6 @@ trigger:
     - main
 
 variables:
-  - template: .\env-variables.yml # 
     
   - name: vmImageName
     value: "windows-latest"
@@ -13,21 +12,25 @@ pool:
   vmImage: ${{ variables.vmImageName }}
 
 stages:
-  - template: templates/deploy-notebooks.yml # referring to templates folder inside CICD folder
-    parameters:
-    stageId: "Deploy_to_Dev_Environment" # CI part
-    env: "dev"
-    environmentName: ${{ variables.dev-environment-name }} #create in pipeline variable group dbw-cicd-dev ("dev-environment-databricks-cicd")
-    resourceGroupName: ${{ variables.dev-resource-group-name }} #create in pipeline variable group dbw-cicd-dev and define value
-    serviceConnection: ${{ variables.dev-service-connection-name }} #create in pipeline variable group dbw-cicd-dev ("dev-service-connection")
-    notebooksPath: ${{ variables.notebooksPath }}
-  
-  - template: templates/deploy-notebooks.yml # referring to templates folder inside CICD folder
-    parameters:
-    dependsOn: ["Deploy_to_Dev_Environment"]
-    stageId: "Deploy_to_PROD_Environment" # CI part
-    env: "prod"
-    environmentName: ${{ variables.prod-environment-name }} #create in pipeline variable group dbw-cicd-dev ("prod-environment-databricks-cicd")
-    resourceGroupName: ${{ variables.prod-resource-group-name }} #create in pipeline variable group dbw-cicd-dev and define value
-    serviceConnection: ${{ variables.prod-service-connection-name }} #create in pipeline variable group dbw-cicd-dev ("prod-service-connection")
-    notebooksPath: ${{ variables.notebooksPath }} # stays same because notebook folder source is same
+ - stage: DoingDBRickstuff
+   variables:
+    - template: .\env-variables.yml # 
+   jobs:
+    - template: templates/deploy-notebooks.yml # referring to templates folder inside CICD folder
+      parameters:
+      stageId: "Deploy_to_Dev_Environment" # CI part
+      env: "dev"
+      environmentName: ${{ variables.dev-environment-name }} #create in pipeline variable group dbw-cicd-dev ("dev-environment-databricks-cicd")
+      resourceGroupName: ${{ variables.dev-resource-group-name }} #create in pipeline variable group dbw-cicd-dev and define value
+      serviceConnection: ${{ variables.dev-service-connection-name }} #create in pipeline variable group dbw-cicd-dev ("dev-service-connection")
+      notebooksPath: $(notebooksPath)
+    
+    - template: templates/deploy-notebooks.yml # referring to templates folder inside CICD folder
+      parameters:
+      dependsOn: ["Deploy_to_Dev_Environment"]
+      stageId: "Deploy_to_PROD_Environment" # CI part
+      env: "prod"
+      environmentName: ${{ variables.prod-environment-name }} #create in pipeline variable group dbw-cicd-dev ("prod-environment-databricks-cicd")
+      resourceGroupName: ${{ variables.prod-resource-group-name }} #create in pipeline variable group dbw-cicd-dev and define value
+      serviceConnection: ${{ variables.prod-service-connection-name }} #create in pipeline variable group dbw-cicd-dev ("prod-service-connection")
+      notebooksPath: $(notebooksPath) # stays same because notebook folder source is same
