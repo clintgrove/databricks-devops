@@ -33,20 +33,21 @@ jobs:
             scriptType: bash
             scriptLocation: inlineScript
             inlineScript: |
-              # Set Azure CLI to use dynamic installs
-              az config set extension.use_dynamic_install=yes_without_prompt
+                # Set Azure CLI to use dynamic installs
+                az config set extension.use_dynamic_install = yes_without_prompt
 
-              # Get Databricks workspace ID
-              databricksWorkspace=$(az resource list --resource-group ${{ parameters.resourceGroupName }} --query "[?type=='Microsoft.Databricks/workspaces'].id" --output tsv)
+                # Get Databricks workspace ID
+                $databricksWorkspace = (az resource list --resource-group ${{ parameters.resourceGroupName }} --query "[?type=="Microsoft.Databricks/workspaces"]" | ConvertFrom-Json)[0]
 
-              # Get Databricks workspace details
-              databricksWorkspaceInfo=$(az databricks workspace show --ids $databricksWorkspace --output json)
+                # Get Databricks workspace details
+                $databricksWorkspaceInfo = (az databricks workspace show --ids $databricksWorkspace.id | ConvertFrom-Json)
 
-              # Get Databricks access token (replace with your logic)
-              bearerToken=$(./scripts/DatabricksToken.sh -databricksworkspaceResourceId $(echo $databricksWorkspaceInfo | jq -r '.id') -databricksWorkspaceUrl $(echo $databricksWorkspaceInfo | jq -r '.workspaceUrl'))
+                # Get Databricks access token (replace with your logic)
+                $bearerToken = $(Build.Repository.LocalPath)/CICD/scripts/DatabricksToken.ps1 -databricksworkspaceResourceId $databricksWorkspaceInfo.id -databricksWorkspaceUrl $databricksWorkspaceInfo.workspaceUrl
 
-              # Install azure.databricks.cicd.tools module
-              pwsh -Command "Install-Module -Name azure.databricks.cicd.tools -Force -Scope CurrentUser"
+                # Install azure.databricks.cicd.tools module
+                Install-Module -Name azure.databricks.cicd.tools -Force -Scope CurrentUser
 
-              # Import modules and deploy notebooks
-              pwsh -Command "Import-Module -Name azure.databricks.cicd.tools; Import-DatabricksFolder -BearerToken $bearerToken -Region $(echo $databricksWorkspaceInfo | jq -r '.location') -LocalPath ${{ parameters.notebooksPath }} -DatabricksPath '/live' -Clean"
+                # Import modules
+                Import-Module -Name azure.databricks.cicd.tools
+                Import-DatabricksFolder -BearerToken $bearerToken -Region $databricksWorkspaceInfo.location -LocalPath $(Build.Repository.LocalPath)/$(parameters.notebooksPath) -DatabricksPath "/live" -Clean
