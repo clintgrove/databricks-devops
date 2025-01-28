@@ -1,0 +1,9 @@
+dev-environment-name = 'dev'
+dev-resource-group-name = 'analytics'
+dev-service-connection-name = 'dev-service-connection'
+
+notebooksPath = 'notebook'
+
+prod-environment-name = 'prod'
+prod-resource-group-name = 'analytics-prod'
+prod-service-connection-name = 'prod-service-connection'
