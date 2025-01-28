@@ -16,14 +16,14 @@ parameters:
   type: string
 
 jobs:
-- deployment: DatabricksNotebookShiftDeployment
-  displayName: "Deploy Databricks Notebooks"
+- deployment: ${{ parameters.stageId }} # Parameterized job name for uniqueness
+  displayName: "Deploy Databricks Notebooks to ${{ parameters.env }}"
   environment: ${{ parameters.environmentName }}
   strategy:
     runOnce:
       deploy:
         steps:
-        - task: Checkout@v2
+        - checkout: self
           displayName: "Checkout repository"
 
         - task: AzureCLI@2
