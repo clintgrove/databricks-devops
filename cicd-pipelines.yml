@@ -16,7 +16,7 @@ stages:
  - stage: DoingDBRickstuff
    jobs:
     - job: Deploy_to_Dev_Environment
-      template: templates/deploy-notebooks.yml
+    - template: templates/deploy-notebooks.yml
       parameters:
         stageId: "Deploy_to_Dev_Environment"
         env: "dev"
@@ -27,7 +27,7 @@ stages:
     
     - job: Deploy_to_PROD_Environment
       dependsOn: Deploy_to_Dev_Environment
-      template: templates/deploy-notebooks.yml
+    - template: templates/deploy-notebooks.yml
       parameters:
         stageId: "Deploy_to_PROD_Environment"
         env: "prod"
