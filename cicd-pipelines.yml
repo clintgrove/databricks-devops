@@ -13,7 +13,7 @@ pool:
   vmImage:  $(vmImageName)
 
 stages:
- - stage: DoingDBRickstuff
+ - stage: DoingDev
    jobs:
     - template: templates/deploy-notebooks.yml
       parameters:
@@ -23,9 +23,11 @@ stages:
         resourceGroupName: ${{ variables['dev-resource-group-name'] }}
         serviceConnection: ${{ variables['dev-service-connection-name'] }}
         notebooksPath: $(notebooksPath)
-    
+
+ - stage: DoingProd
+   dependsOn: DoingDev  # Ensures PROD runs only after DEV succeeds
+   jobs:
     - template: templates/deploy-notebooks.yml
-      dependsOn: Deploy_to_Dev_Environment  # Ensure it runs after Dev
       parameters:
         stageId: "Deploy_to_PROD_Environment"
         env: "prod"
@@ -33,4 +35,3 @@ stages:
         resourceGroupName: ${{ variables['prod-resource-group-name'] }}
         serviceConnection: ${{ variables['prod-service-connection-name'] }}
         notebooksPath: $(notebooksPath)
-
