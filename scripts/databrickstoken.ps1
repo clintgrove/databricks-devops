@@ -28,7 +28,7 @@ $json = @{}
 $json["lifetime_seconds"] = $tokenLifeTimeSeconds
 
 # Send request to Databricks API to create token
-$req = Invoke-WebRequest -Uri "https://$databricksWorkspaceUrl/api/2.0/token/create" -Body ($json | ConvertTo-Json) -ContentType "application/json" -Headers $headers
+$req = Invoke-WebRequest -Uri "https://$databricksWorkspaceUrl/api/2.0/token/create" -Method Post -Body ($json | ConvertTo-Json) -ContentType "application/json" -Headers $headers
 
 # Extract bearer token from response
 $bearerToken = ($req.Content | ConvertFrom-Json).token_value
