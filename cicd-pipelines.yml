@@ -15,7 +15,6 @@ pool:
 stages:
  - stage: DoingDBRickstuff
    jobs:
-    - job: Deploy_to_Dev_Environment
     - template: templates/deploy-notebooks.yml
       parameters:
         stageId: "Deploy_to_Dev_Environment"
