@@ -24,8 +24,6 @@ stages:
         serviceConnection: ${{ variables['dev-service-connection-name'] }}
         notebooksPath: $(notebooksPath)
     
-    - job: Deploy_to_PROD_Environment
-      dependsOn: Deploy_to_Dev_Environment
     - template: templates/deploy-notebooks.yml
       parameters:
         stageId: "Deploy_to_PROD_Environment"
@@ -34,3 +32,4 @@ stages:
         resourceGroupName: ${{ variables['prod-resource-group-name'] }}
         serviceConnection: ${{ variables['prod-service-connection-name'] }}
         notebooksPath: $(notebooksPath)
+      dependsOn: Deploy_to_Dev_Environment  # Ensure it runs after Dev
