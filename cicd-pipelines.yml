@@ -24,13 +24,13 @@ stages:
         serviceConnection: ${{ variables['dev-service-connection-name'] }}
         notebooksPath: $(notebooksPath)
     
-    - template: templates/deploy-notebooks.yml
-      condition: false
-      parameters:
-        dependsOn: ["Deploy_to_Dev_Environment"]
-        stageId: "Deploy_to_PROD_Environment"
-        env: "prod"
-        environmentName: ${{ variables['prod-environment-name'] }}
-        resourceGroupName: ${{ variables['prod-resource-group-name'] }}
-        serviceConnection: ${{ variables['prod-service-connection-name'] }}
-        notebooksPath: $(notebooksPath)
+    # - template: templates/deploy-notebooks.yml
+    #   condition: false
+    #   parameters:
+    #     dependsOn: ["Deploy_to_Dev_Environment"]
+    #     stageId: "Deploy_to_PROD_Environment"
+    #     env: "prod"
+    #     environmentName: ${{ variables['prod-environment-name'] }}
+    #     resourceGroupName: ${{ variables['prod-resource-group-name'] }}
+    #     serviceConnection: ${{ variables['prod-service-connection-name'] }}
+    #     notebooksPath: $(notebooksPath)
