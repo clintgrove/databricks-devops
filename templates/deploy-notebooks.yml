@@ -49,6 +49,6 @@ jobs:
                 # Install azure.databricks.cicd.tools module
                 Install-Module -Name azure.databricks.cicd.tools -Force -Scope CurrentUser
 
-                # Import modules
+                # Get Git repository path for Notebooks then deploy to Databricks workspace to allocated location
                 Import-Module -Name azure.databricks.cicd.tools
                 Import-DatabricksFolder -BearerToken $bearerToken -Region $databricksWorkspaceInfo.location -LocalPath "$(Build.Repository.LocalPath)/${{ parameters.notebooksPath }}" -DatabricksPath "/live" -Clean
