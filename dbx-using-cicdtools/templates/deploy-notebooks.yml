@@ -44,7 +44,7 @@ jobs:
                 $databricksWorkspaceInfo = (az databricks workspace show --ids $databricksWorkspace --output json | ConvertFrom-Json)
 
                 # Get Databricks access token (replace with your logic)
-                $bearerToken = & "$(Build.Repository.LocalPath)/scripts/DatabricksToken.ps1" -databricksworkspaceResourceId $databricksWorkspaceInfo.id -databricksWorkspaceUrl $databricksWorkspaceInfo.workspaceUrl
+                $bearerToken = & "$(Build.Repository.LocalPath)/dbx-using-cicdtools/scripts/DatabricksToken.ps1" -databricksworkspaceResourceId $databricksWorkspaceInfo.id -databricksWorkspaceUrl $databricksWorkspaceInfo.workspaceUrl
 
                 # Install azure.databricks.cicd.tools module
                 Install-Module -Name azure.databricks.cicd.tools -Force -Scope CurrentUser
