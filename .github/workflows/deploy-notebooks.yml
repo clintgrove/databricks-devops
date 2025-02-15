@@ -1,0 +1,53 @@
+name: Deploy Databricks Notebooks
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Azure CLI
+      uses: azure/CLI@v1
+      with:
+        azcliversion: 2.30.0
+
+    - name: Configure Azure CLI
+      run: |
+        az config set extension.use_dynamic_install=yes_without_prompt
+        az config set extension.dynamic_install_allow_preview=true
+
+    - name: Get Databricks workspace ID
+      id: get_workspace_id
+      run: |
+        az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+        databricksWorkspace=$(az resource list --resource-group ${{ secrets.RESOURCE_GROUP_NAME }} --query "[?type=='Microsoft.Databricks/workspaces'].id" --output tsv)
+        echo "::set-output name=workspace_id::$databricksWorkspace"
+
+    - name: Get Databricks workspace details
+      id: get_workspace_details
+      run: |
+        databricksWorkspaceInfo=$(az databricks workspace show --ids ${{ steps.get_workspace_id.outputs.workspace_id }} --output json)
+        echo "::set-output name=workspace_info::$databricksWorkspaceInfo"
+
+    - name: Get Databricks access token
+      id: get_access_token
+      run: |
+        workspaceInfo=${{ steps.get_workspace_details.outputs.workspace_info }}
+        bearerToken=$(pwsh ./scripts/DatabricksToken.ps1 -databricksWorkspaceResourceId ${{ steps.get_workspace_id.outputs.workspace_id }} -databricksWorkspaceUrl $(echo $workspaceInfo | jq -r '.workspaceUrl'))
+        echo "::set-output name=bearer_token::$bearerToken"
+
+    - name: Install azure.databricks.cicd.tools module
+      run: |
+        pwsh -Command "Install-Module -Name azure.databricks.cicd.tools -Force -Scope CurrentUser"
+
+    - name: Deploy Notebooks to Databricks
+      run: |
+        pwsh -Command "Import-Module -Name azure.databricks.cicd.tools"
+        pwsh -Command "Import-DatabricksFolder -BearerToken ${{ steps.get_access_token.outputs.bearer_token }} -Region $(echo ${{ steps.get_workspace_details.outputs.workspace_info }} | jq -r '.location') -LocalPath ./dbx-using-cicdtools/notebooks -DatabricksPath /live -Clean"
