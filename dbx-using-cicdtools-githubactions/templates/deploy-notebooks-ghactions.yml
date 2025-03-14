@@ -31,6 +31,7 @@ jobs:
       run: |
         # Set Azure CLI to use dynamic installs
         az config set extension.use_dynamic_install=yes_without_prompt
+        az config set extension.dynamic_install_allow_preview=true
 
         # Get Databricks workspace ID
         databricksWorkspace=$(az resource list --resource-group ${{ parameters.resourceGroupName }} --query "[?type=='Microsoft.Databricks/workspaces'].id" --output tsv)
@@ -39,7 +40,7 @@ jobs:
         databricksWorkspaceInfo=$(az databricks workspace show --ids $databricksWorkspace --output json)
 
         # Get Databricks access token (replace with your logic)
-        bearerToken=$(./scripts/DatabricksToken.sh -databricksworkspaceResourceId $(echo $databricksWorkspaceInfo | jq -r '.id') -databricksWorkspaceUrl $(echo $databricksWorkspaceInfo | jq -r '.workspaceUrl'))
+        bearerToken=$(pwsh ./scripts/DatabricksToken.ps1 -databricksworkspaceResourceId $(echo $databricksWorkspaceInfo | jq -r '.id') -databricksWorkspaceUrl $(echo $databricksWorkspaceInfo | jq -r '.workspaceUrl'))
 
         # Install azure.databricks.cicd.tools module
         pwsh -Command "Install-Module -Name azure.databricks.cicd.tools -Force -Scope CurrentUser"

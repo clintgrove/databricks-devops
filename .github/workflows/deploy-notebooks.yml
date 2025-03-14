@@ -4,14 +4,21 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy from'
+        required: true
+        default: 'main'
 
 jobs:
-  deploy:
+  deploy-dev:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.inputs.branch }}
 
     - name: Set up Azure CLI
       uses: azure/CLI@v1
@@ -23,31 +30,41 @@ jobs:
         az config set extension.use_dynamic_install=yes_without_prompt
         az config set extension.dynamic_install_allow_preview=true
 
-    - name: Get Databricks workspace ID
-      id: get_workspace_id
-      run: |
-        az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
-        databricksWorkspace=$(az resource list --resource-group ${{ secrets.RESOURCE_GROUP_NAME }} --query "[?type=='Microsoft.Databricks/workspaces'].id" --output tsv)
-        echo "::set-output name=workspace_id::$databricksWorkspace"
+    - name: Deploy Notebooks to Dev
+      uses: ./.github/workflows/templates/deploy-notebooks-ghactions.yml
+      with:
+        stageId: "Deploy_to_Dev_Environment"
+        env: "dev"
+        environmentName: "dev"
+        resourceGroupName: "dbr-analytics-dev"
+        serviceConnection: "clintazrealallrgs"
+        notebooksPath: "dbx-using-cicdtools-githubactions/notebooks"
 
-    - name: Get Databricks workspace details
-      id: get_workspace_details
-      run: |
-        databricksWorkspaceInfo=$(az databricks workspace show --ids ${{ steps.get_workspace_id.outputs.workspace_id }} --output json)
-        echo "::set-output name=workspace_info::$databricksWorkspaceInfo"
+  deploy-prod:
+    runs-on: ubuntu-latest
+    needs: deploy-dev
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.inputs.branch }}
 
-    - name: Get Databricks access token
-      id: get_access_token
-      run: |
-        workspaceInfo=${{ steps.get_workspace_details.outputs.workspace_info }}
-        bearerToken=$(pwsh ./scripts/DatabricksToken.ps1 -databricksWorkspaceResourceId ${{ steps.get_workspace_id.outputs.workspace_id }} -databricksWorkspaceUrl $(echo $workspaceInfo | jq -r '.workspaceUrl'))
-        echo "::set-output name=bearer_token::$bearerToken"
+    - name: Set up Azure CLI
+      uses: azure/CLI@v1
+      with:
+        azcliversion: 2.30.0
 
-    - name: Install azure.databricks.cicd.tools module
+    - name: Configure Azure CLI
       run: |
-        pwsh -Command "Install-Module -Name azure.databricks.cicd.tools -Force -Scope CurrentUser"
+        az config set extension.use_dynamic_install=yes_without_prompt
+        az config set extension.dynamic_install_allow_preview=true
 
-    - name: Deploy Notebooks to Databricks
-      run: |
-        pwsh -Command "Import-Module -Name azure.databricks.cicd.tools"
-        pwsh -Command "Import-DatabricksFolder -BearerToken ${{ steps.get_access_token.outputs.bearer_token }} -Region $(echo ${{ steps.get_workspace_details.outputs.workspace_info }} | jq -r '.location') -LocalPath ./dbx-using-cicdtools-azdevops/notebooks -DatabricksPath /live -Clean"
+    - name: Deploy Notebooks to Prod
+      uses: ./.github/workflows/templates/deploy-notebooks-ghactions.yml
+      with:
+        stageId: "Deploy_to_Prod_Environment"
+        env: "prod"
+        environmentName: "prod"
+        resourceGroupName: "dbr-analytics-prod"
+        serviceConnection: ${{ secrets.AZURE_SERVICE_CONNECTION }}
+        notebooksPath: "dbx-using-cicdtools-githubactions/notebooks"
