@@ -1,16 +1,9 @@
 name: Deploy Databricks Notebooks
-
 on:
   push:
     branches:
       - main
   workflow_dispatch:
-    inputs:
-      branch:
-        description: 'Branch to deploy from'
-        required: true
-        default: 'main'
-    
 
 jobs:
   deploy:
