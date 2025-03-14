@@ -1,4 +1,4 @@
-name: Deploy Notebooks
+name: db1
 
 on:
   workflow_call:
