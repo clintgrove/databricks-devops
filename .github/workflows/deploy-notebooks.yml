@@ -5,11 +5,6 @@ on:
     branches:
       - main
   workflow_dispatch:
-    inputs:
-      branch:
-        description: 'Branch to deploy from'
-        required: true
-        default: 'main'
 
 jobs:
   deploy-dev:
@@ -21,9 +16,11 @@ jobs:
         ref: ${{ github.event.inputs.branch }}
 
     - name: Set up Azure CLI
-      uses: azure/CLI@v1
+      uses: azure/cli@v1
       with:
         azcliversion: 2.30.0
+        inlineScript: |
+          echo "Azure CLI setup complete"
 
     - name: Configure Azure CLI
       run: |
