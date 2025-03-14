@@ -3,7 +3,7 @@ name: Deploy Databricks Notebooks
 on:
   push:
     branches:
-      - main
+      - getgithubtowork
   workflow_dispatch:
 
 jobs:
