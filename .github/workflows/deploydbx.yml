@@ -9,7 +9,7 @@ on:
 jobs:
   deploy-dev:
     runs-on: ubuntu-latest
-    # Call the reusable workflow for deploying notebooks
+    # Call the reusable workflow for deploying notebooks, lets go
     uses: ./.github/workflows/deploy-notebooks-ghactions.yml
     with:
       stageId: "Deploy_to_Dev_Environment"
