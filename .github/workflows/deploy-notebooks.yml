@@ -11,16 +11,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         ref: ${{ github.event.inputs.branch }}
 
-    - name: Set up Azure CLI
-      uses: azure/cli@v1
+    # - name: Set up Azure CLI
+    #   uses: azure/cli@v1
+    #   with:
+    #     azcliversion: 2.30.0
+    #     inlineScript: |
+    #       echo "Azure CLI setup complete"
+
+    - name: Azure Login
+      uses: Azure/login@v2.2.0
       with:
-        azcliversion: 2.30.0
-        inlineScript: |
-          echo "Azure CLI setup complete"
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Configure Azure CLI
       run: |
