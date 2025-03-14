@@ -10,63 +10,52 @@ jobs:
   deploy-dev:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-      with:
-        ref: ${{ github.event.inputs.branch }}
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    # - name: Set up Azure CLI
-    #   uses: azure/cli@v1
-    #   with:
-    #     azcliversion: 2.30.0
-    #     inlineScript: |
-    #       echo "Azure CLI setup complete"
+      - name: Azure Login
+        uses: Azure/login@v2.2.0
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Azure Login
-      uses: Azure/login@v2.2.0
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Configure Azure CLI
+        run: |
+          az config set extension.use_dynamic_install=yes_without_prompt
+          az config set extension.dynamic_install_allow_preview=true
 
-    - name: Configure Azure CLI
-      run: |
-        az config set extension.use_dynamic_install=yes_without_prompt
-        az config set extension.dynamic_install_allow_preview=true
-
-    - name: Deploy Notebooks to Dev
-      uses: ./.github/workflows/templates/deploy-notebooks-ghactions.yml
-      with:
-        stageId: "Deploy_to_Dev_Environment"
-        env: "dev"
-        environmentName: "dev"
-        resourceGroupName: "dbr-analytics-dev"
-        serviceConnection: "clintazrealallrgs"
-        notebooksPath: "dbx-using-cicdtools-githubactions/notebooks"
+    # Call the reusable workflow for deploying notebooks
+    uses: ./.github/workflows/templates/deploy-notebooks-ghactions.yml
+    with:
+      stageId: "Deploy_to_Dev_Environment"
+      env: "dev"
+      environmentName: "dev"
+      resourceGroupName: "dbr-analytics-dev"
+      serviceConnection: "clintazrealallrgs"
+      notebooksPath: "dbx-using-cicdtools-githubactions/notebooks"
 
   deploy-prod:
     runs-on: ubuntu-latest
     needs: deploy-dev
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-      with:
-        ref: ${{ github.event.inputs.branch }}
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up Azure CLI
-      uses: azure/CLI@v1
-      with:
-        azcliversion: 2.30.0
+      - name: Azure Login
+        uses: Azure/login@v2.2.0
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Configure Azure CLI
-      run: |
-        az config set extension.use_dynamic_install=yes_without_prompt
-        az config set extension.dynamic_install_allow_preview=true
+      - name: Configure Azure CLI
+        run: |
+          az config set extension.use_dynamic_install=yes_without_prompt
+          az config set extension.dynamic_install_allow_preview=true
 
-    - name: Deploy Notebooks to Prod
-      uses: ./.github/workflows/templates/deploy-notebooks-ghactions.yml
-      with:
-        stageId: "Deploy_to_Prod_Environment"
-        env: "prod"
-        environmentName: "prod"
-        resourceGroupName: "dbr-analytics-prod"
-        serviceConnection: ${{ secrets.AZURE_SERVICE_CONNECTION }}
-        notebooksPath: "dbx-using-cicdtools-githubactions/notebooks"
+    # Call the reusable workflow for deploying notebooks to Prod
+    uses: ./.github/workflows/templates/deploy-notebooks-ghactions.yml
+    with:
+      stageId: "Deploy_to_Prod_Environment"
+      env: "prod"
+      environmentName: "prod"
+      resourceGroupName: "dbr-analytics-prod"
+      serviceConnection: ${{ secrets.AZURE_SERVICE_CONNECTION }}
+      notebooksPath: "dbx-using-cicdtools-githubactions/notebooks"
