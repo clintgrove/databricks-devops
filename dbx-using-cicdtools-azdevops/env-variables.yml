@@ -1,9 +1,14 @@
 variables:
-  dev-environment-name :  'dev'
-  dev-resource-group-name :  'dbr-analytics-dev'
+# Development environment variables
   dev-service-connection-name :  'clintazrealallrgs'
+  dev-environment-name :  'dev' #this will come up in devops environment *which is in same menu as library and such
+  dev-resource-group-name :  'dbr-analytics-dev'
+  dev-databricks-workspacename :  'dedbxcl444'
 
 
+# Production environment variables
+  prod-service-connection-name :  'clintazrealallrgs'
   prod-environment-name :  'prod'
   prod-resource-group-name :  'dbr-analytics-prod'
-  prod-service-connection-name :  'clintazrealallrgs'
+  prod-databricks-workspacename :  'dedbxcl445'
+

@@ -14,6 +14,8 @@ parameters:
   type: string
 - name: notebooksPath
   type: string
+- name: databricksWorkspaceName
+  type: string
 
 jobs:
 - deployment: ${{ parameters.stageId }} # Parameterized job name for uniqueness
@@ -39,6 +41,7 @@ jobs:
 
                 # Get Databricks workspace ID
                 $databricksWorkspace = (az resource list --resource-group ${{ parameters.resourceGroupName }} --query "[?type=='Microsoft.Databricks/workspaces'].id" --output tsv)
+                # If you know the name of the workspace, and you have more than one dbricks in a RG, then use this $databricksWorkspace = (az databricks workspace show --resource-group ${{ parameters.resourceGroupName }} --name ${{ parameters.databricksWorkspaceName }} --query "id" --output tsv)             # Get Databricks workspace details
 
                 # Get Databricks workspace details
                 $databricksWorkspaceInfo = (az databricks workspace show --ids $databricksWorkspace --output json | ConvertFrom-Json)

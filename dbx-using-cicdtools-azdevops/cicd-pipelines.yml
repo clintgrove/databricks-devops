@@ -21,6 +21,7 @@ stages:
         env: "dev"
         environmentName: ${{ variables['dev-environment-name'] }}
         resourceGroupName: ${{ variables['dev-resource-group-name'] }}
+        databricksWorkspaceName: ${{ variables['dev-databricks-workspacename'] }}
         serviceConnection: ${{ variables['dev-service-connection-name'] }}
         notebooksPath: $(notebooksPath)
 
@@ -33,5 +34,6 @@ stages:
         env: "prod"
         environmentName: ${{ variables['prod-environment-name'] }}
         resourceGroupName: ${{ variables['prod-resource-group-name'] }}
+        databricksWorkspaceName: ${{ variables['prod-databricks-workspacename'] }}        
         serviceConnection: ${{ variables['prod-service-connection-name'] }}
         notebooksPath: $(notebooksPath)
