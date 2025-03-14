@@ -1,49 +1,58 @@
-parameters:
-- name: stageId
-  type: string
-- name: dependson
-  type: object
-  default: []
-- name: env
-  type: string
-- name: environmentName
-  type: string
-- name: resourceGroupName
-  type: string
-- name: serviceConnection
-  type: string
-- name: notebooksPath
-  type: string
+name: Deploy Notebooks to Databricks
+
+on:
+  workflow_call:
+    inputs:
+      stageId:
+        required: true
+        type: string
+      env:
+        required: true
+        type: string
+      environmentName:
+        required: true
+        type: string
+      resourceGroupName:
+        required: true
+        type: string
+      serviceConnection:
+        required: true
+        type: string
+      notebooksPath:
+        required: true
+        type: string
 
 jobs:
-  deploy:
+  deploy-notebooks:
     runs-on: ubuntu-latest
-    needs: ${{ parameters.dependson }}
-    environment: ${{ parameters.environmentName }}
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up Azure CLI
-      uses: azure/cli@v1
+      - name: Azure Login
+        uses: Azure/login@v2.2.0
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Deploy Databricks Notebooks
-      run: |
-        # Set Azure CLI to use dynamic installs
-        az config set extension.use_dynamic_install=yes_without_prompt
-        az config set extension.dynamic_install_allow_preview=true
+      - name: Configure Azure CLI
+        run: |
+          az config set extension.use_dynamic_install=yes_without_prompt
+          az config set extension.dynamic_install_allow_preview=true
 
-        # Get Databricks workspace ID
-        databricksWorkspace=$(az resource list --resource-group ${{ parameters.resourceGroupName }} --query "[?type=='Microsoft.Databricks/workspaces'].id" --output tsv)
+      - name: Deploy Databricks Notebooks
+        env:
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        run: |
+          echo "Deploying notebooks to ${env} environment"
+          echo "Using resource group: ${resourceGroupName}"
+          echo "Notebooks path: ${notebooksPath}"
 
-        # Get Databricks workspace details
-        databricksWorkspaceInfo=$(az databricks workspace show --ids $databricksWorkspace --output json)
+          # Deploy the notebooks using Databricks CLI or API
+          az databricks workspace import_dir \
+            --profile ${env} \
+            --source ${notebooksPath} \
+            --destination /Workspace/Users/${env}
 
-        # Get Databricks access token (replace with your logic)
-        bearerToken=$(pwsh ./scripts/DatabricksToken.ps1 -databricksworkspaceResourceId $(echo $databricksWorkspaceInfo | jq -r '.id') -databricksWorkspaceUrl $(echo $databricksWorkspaceInfo | jq -r '.workspaceUrl'))
-
-        # Install azure.databricks.cicd.tools module
-        pwsh -Command "Install-Module -Name azure.databricks.cicd.tools -Force -Scope CurrentUser"
-
-        # Import modules and deploy notebooks
-        pwsh -Command "Import-Module -Name azure.databricks.cicd.tools; Import-DatabricksFolder -BearerToken $bearerToken -Region $(echo $databricksWorkspaceInfo | jq -r '.location') -LocalPath ${{ github.workspace }}/${{ parameters.notebooksPath }} -DatabricksPath '/live' -Clean"
+          echo "Deployment complete."
