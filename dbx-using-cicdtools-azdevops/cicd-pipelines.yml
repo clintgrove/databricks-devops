@@ -7,7 +7,7 @@ variables:
   - name: vmImageName
     value: "windows-latest"
   - name: notebooksPath
-    value: "dbx-using-cicdtools/notebooks"
+    value: "dbx-using-cicdtools-azdevops/notebooks"
 
 pool:
   vmImage:  $(vmImageName)

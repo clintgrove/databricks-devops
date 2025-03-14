@@ -50,4 +50,4 @@ jobs:
     - name: Deploy Notebooks to Databricks
       run: |
         pwsh -Command "Import-Module -Name azure.databricks.cicd.tools"
-        pwsh -Command "Import-DatabricksFolder -BearerToken ${{ steps.get_access_token.outputs.bearer_token }} -Region $(echo ${{ steps.get_workspace_details.outputs.workspace_info }} | jq -r '.location') -LocalPath ./dbx-using-cicdtools/notebooks -DatabricksPath /live -Clean"
+        pwsh -Command "Import-DatabricksFolder -BearerToken ${{ steps.get_access_token.outputs.bearer_token }} -Region $(echo ${{ steps.get_workspace_details.outputs.workspace_info }} | jq -r '.location') -LocalPath ./dbx-using-cicdtools-azdevops/notebooks -DatabricksPath /live -Clean"
