@@ -24,7 +24,7 @@ jobs:
           az config set extension.dynamic_install_allow_preview=true
 
     # Call the reusable workflow for deploying notebooks
-    uses: ./.github/workflows/templates/deploy-notebooks-ghactions.yml
+    uses: ./.github/workflows/deploy-notebooks-ghactions.yml
     with:
       stageId: "Deploy_to_Dev_Environment"
       env: "dev"
