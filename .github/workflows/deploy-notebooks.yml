@@ -1,4 +1,4 @@
-name: Deploy Notebooks to Databricks
+name: Deploy Notebooks
 
 on:
   workflow_call:
