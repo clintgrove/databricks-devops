@@ -9,9 +9,9 @@ on:
       dbx-env:
         required: true
         type: string
-      environmentName:
-        required: true
-        type: string
+      # environmentName:
+      #   required: true
+      #   type: string
       resourceGroupName:
         required: true
         type: string
