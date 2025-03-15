@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   db1:
-    uses: ./.github/workflows/deploy-notebooks.yml@getgithubtowork
+    uses: ./.github/workflows/deploy-notebooks.yml
     with:
       stageId: "Deploy_to_Dev_Environment"
       dbx-env: dev
