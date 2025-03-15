@@ -23,7 +23,6 @@ on:
         type: string
 
 jobs:
-
   deploy-notebooks:
     runs-on: ubuntu-latest
     steps:
