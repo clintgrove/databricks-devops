@@ -22,6 +22,9 @@ on:
         required: true
         type: string
 
+permissions:
+  id-token: write
+  contents: read
 jobs:
   deploy-notebooks:
     runs-on: ubuntu-latest
@@ -32,7 +35,9 @@ jobs:
       - name: Azure Login
         uses: azure/login@v2
         with:
-          creds: '{"clientId":"${{ secrets.AZURE_CLIENT_ID }}","clientSecret":"${{ secrets.AZURE_CLIENT_SECRET }}","tenantId":"${{ secrets.AZURE_TENANT_ID }}"}'
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          subscription-id: "3be2ce56-4a5f-4034-88d7-2953d1819ed3"
+          tenant-id": ${{ secrets.AZURE_TENANT_ID }}
 
       - name: Configure Azure CLI
         run: |
