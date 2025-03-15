@@ -1,0 +1,36 @@
+name: "db1-main"
+
+on:
+  push:
+    branches:
+      - getgithubtowork
+  workflow_dispatch:
+
+permissions:
+  id-token: write 
+  contents: read
+
+jobs:
+  db1-dev:
+    uses: ./.github/workflows/deploy-notebooks.yml
+    with:
+      dbx-env: dev
+      resourceGroupName: "dbr-analytics-dev"
+      notebooksPath: "dbx-using-cicdtools-githubactions/notebooks"
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      DATABRICKS_TOKEN : ${{ secrets.DATABRICKS_TOKEN_DEV }}
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST_DEV}}
+
+  db1-prod:
+    uses: ./.github/workflows/deploy-notebooks.yml
+    with:
+      dbx-env: prod
+      resourceGroupName: "dbr-analytics-prod"
+      notebooksPath: "dbx-using-cicdtools-githubactions/notebooks"
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      DATABRICKS_TOKEN : ${{ secrets.DATABRICKS_TOKEN_PROD }}
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST_PROD}}

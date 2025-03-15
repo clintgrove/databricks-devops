@@ -1,53 +1,74 @@
-name: Deploy Databricks Notebooks
+name: db1
+
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      dbx-env:
+        required: true
+        type: string
+      resourceGroupName:
+        required: true
+        type: string
+      notebooksPath:
+        required: true
+        type: string
+    secrets:
+      AZURE_CLIENT_ID:
+        required: true
+      AZURE_TENANT_ID:
+        required: true
+      DATABRICKS_HOST:
+        required: true
+      DATABRICKS_TOKEN:
+        required: true
+
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
-  deploy:
+  deploy-notebooks:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: "3be2ce56-4a5f-4034-88d7-2953d1819ed3"
 
-    - name: Set up Azure CLI
-      uses: azure/CLI@v1
-      with:
-        azcliversion: 2.30.0
+      - name: Configure Azure CLI
+        run: |
+          az config set extension.use_dynamic_install=yes_without_prompt
+          az config set extension.dynamic_install_allow_preview=true
 
-    - name: Configure Azure CLI
-      run: |
-        az config set extension.use_dynamic_install=yes_without_prompt
-        az config set extension.dynamic_install_allow_preview=true
+      - name: Install Databricks CLI
+        run: |
+          pip install databricks-cli
 
-    - name: Get Databricks workspace ID
-      id: get_workspace_id
-      run: |
-        az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
-        databricksWorkspace=$(az resource list --resource-group ${{ secrets.RESOURCE_GROUP_NAME }} --query "[?type=='Microsoft.Databricks/workspaces'].id" --output tsv)
-        echo "::set-output name=workspace_id::$databricksWorkspace"
+      - name: Configure Databricks CLI
+        run: |
+          databricks configure --token <<EOF
+          ${{ secrets.DATABRICKS_HOST }}
+          ${{ secrets.DATABRICKS_TOKEN }}
+          EOF
 
-    - name: Get Databricks workspace details
-      id: get_workspace_details
-      run: |
-        databricksWorkspaceInfo=$(az databricks workspace show --ids ${{ steps.get_workspace_id.outputs.workspace_id }} --output json)
-        echo "::set-output name=workspace_info::$databricksWorkspaceInfo"
+      - name: Deploy Databricks Notebooks
+        run: |
+          echo "Deploying notebooks to ${{ inputs.dbx-env }} environment"
+          echo "Using resource group: ${{ inputs.resourceGroupName }}"
+          echo "Notebooks path: ${{ inputs.notebooksPath }}"
 
-    - name: Get Databricks access token
-      id: get_access_token
-      run: |
-        workspaceInfo=${{ steps.get_workspace_details.outputs.workspace_info }}
-        bearerToken=$(pwsh ./scripts/DatabricksToken.ps1 -databricksWorkspaceResourceId ${{ steps.get_workspace_id.outputs.workspace_id }} -databricksWorkspaceUrl $(echo $workspaceInfo | jq -r '.workspaceUrl'))
-        echo "::set-output name=bearer_token::$bearerToken"
+          # Deploy the notebooks using Databricks CLI
+          databricks workspace import_dir \
+            --overwrite \
+            ${{ inputs.notebooksPath }} \
+            /live
+          # https://endjin.com/blog/2019/09/import-and-export-notebooks-in-databricks
 
-    - name: Install azure.databricks.cicd.tools module
-      run: |
-        pwsh -Command "Install-Module -Name azure.databricks.cicd.tools -Force -Scope CurrentUser"
-
-    - name: Deploy Notebooks to Databricks
-      run: |
-        pwsh -Command "Import-Module -Name azure.databricks.cicd.tools"
-        pwsh -Command "Import-DatabricksFolder -BearerToken ${{ steps.get_access_token.outputs.bearer_token }} -Region $(echo ${{ steps.get_workspace_details.outputs.workspace_info }} | jq -r '.location') -LocalPath ./dbx-using-cicdtools-azdevops/notebooks -DatabricksPath /live -Clean"
+          echo "Deployment complete."
+        shell: /usr/bin/bash -e {0}
