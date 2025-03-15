@@ -6,6 +6,10 @@ on:
       - getgithubtowork
   workflow_dispatch:
 
+permissions:
+  id-token: write  # Ensure this is granted
+  contents: read
+  
 jobs:
   db1:
     uses: ./.github/workflows/deploy-notebooks.yml
