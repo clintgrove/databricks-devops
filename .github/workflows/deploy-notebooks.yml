@@ -46,6 +46,10 @@ jobs:
           az config set extension.use_dynamic_install=yes_without_prompt
           az config set extension.dynamic_install_allow_preview=true
 
+      - name: Install Databricks CLI extension
+        run: |
+          az extension add --name databricks
+
       - name: Deploy Databricks Notebooks
         env:
           ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
