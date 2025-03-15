@@ -3,7 +3,7 @@ name: "db1-main"
 on:
   push:
     branches:
-      - getgithubtowork
+      - main
   workflow_dispatch:
 
 permissions:
