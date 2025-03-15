@@ -3,16 +3,10 @@ name: db1
 on:
   workflow_call:
     inputs:
-      stageId:
-        required: true
-        type: string
       dbx-env:
         required: true
         type: string
       resourceGroupName:
-        required: true
-        type: string
-      serviceConnection:
         required: true
         type: string
       notebooksPath:
