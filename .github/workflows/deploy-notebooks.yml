@@ -1,12 +1,30 @@
-# File: .github/workflows/workflow.yml
+name: db1
 
-on: [push]
-
-name: Run Azure Login With a Service Principal Secret
+on:
+  workflow_call:
+    inputs:
+      stageId:
+        required: true
+        type: string
+      env:
+        required: true
+        type: string
+      environmentName:
+        required: true
+        type: string
+      resourceGroupName:
+        required: true
+        type: string
+      serviceConnection:
+        required: true
+        type: string
+      notebooksPath:
+        required: true
+        type: string
 
 jobs:
 
-  build-and-deploy:
+  deploy-notebooks:
     runs-on: ubuntu-latest
     steps:
 
