@@ -23,8 +23,8 @@ on:
         required: true
       AZURE_TENANT_ID:
         required: true
-      DATABRICKS_HOST:
-        required: true
+      # DATABRICKS_HOST:
+      #   required: true
       DATABRICKS_TOKEN_DEV:
         required: true
 
