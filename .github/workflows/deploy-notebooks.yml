@@ -25,7 +25,7 @@ on:
         required: true
       DATABRICKS_HOST:
         required: true
-      DATABRICKS_TOKEN_DEV:
+      DATABRICKS_TOKEN:
         required: true
 
 
@@ -59,8 +59,8 @@ jobs:
       - name: Configure Databricks CLI
         run: |
           databricks configure --token <<EOF
-          https://adb-1461038884007436.16.azuredatabricks.net/
-          ${{ secrets.DATABRICKS_TOKEN_DEV }}
+          ${{ secrets.DATABRICKS_HOST }}
+          ${{ secrets.DATABRICKS_TOKEN }}
           EOF
 
       - name: Deploy Databricks Notebooks
