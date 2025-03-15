@@ -22,13 +22,19 @@ jobs:
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      DATABRICKS_TOKEN_DEV : ${{ secrets.DATABRICKS_TOKEN_DEV }}
+      DATABRICKS_TOKEN : ${{ secrets.DATABRICKS_TOKEN_DEV }}
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST_DEV}}
 
-  # deploy-prod:
-  #   uses: ./.github/workflows/deploy-notebooks.yml
-  #   with:
-  #     stageId: "Deploy_to_Prod_Environment"
-  #     dbx-env: prod
-  #     resourceGroupName: "dbr-analytics-prod"
-  #     serviceConnection: "clintazrealallrgs"
-  #     notebooksPath: "dbx-using-cicdtools-githubactions/notebooks"
+  db1-prod:
+    uses: ./.github/workflows/deploy-notebooks.yml
+    with:
+      stageId: "Deploy_to_Prod_Environment"
+      dbx-env: prod
+      resourceGroupName: "dbr-analytics-prod"
+      serviceConnection: "clintazrealallrgs"
+      notebooksPath: "dbx-using-cicdtools-githubactions/notebooks"
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      DATABRICKS_TOKEN : ${{ secrets.DATABRICKS_TOKEN_PROD }}
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST_PROD}}
