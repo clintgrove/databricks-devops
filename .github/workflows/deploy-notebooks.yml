@@ -21,7 +21,9 @@ on: [push]
     #   notebooksPath:
     #     required: true
     #     type: string
-
+permissions:
+  id-token: write
+  contents: read
 jobs:
   deploy-notebooks:
     runs-on: ubuntu-latest
