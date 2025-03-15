@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 jobs:
-  db1:
+  db1-dev:
     uses: ./.github/workflows/deploy-notebooks.yml
     with:
       dbx-env: dev
