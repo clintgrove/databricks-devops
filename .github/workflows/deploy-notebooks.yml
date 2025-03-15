@@ -62,9 +62,9 @@ jobs:
 
           # Deploy the notebooks using Databricks CLI
           databricks workspace import_dir \
-            --profile ${{ inputs.dbx-env }} \
-            --source ${{ inputs.notebooksPath }} \
-            --destination /Workspace/Users/${{ inputs.dbx-env }}
+            ${{ inputs.notebooksPath }} \
+            /Workspace/Users/${{ inputs.dbx-env }}
+          # https://endjin.com/blog/2019/09/import-and-export-notebooks-in-databricks
 
           echo "Deployment complete."
         shell: /usr/bin/bash -e {0}
