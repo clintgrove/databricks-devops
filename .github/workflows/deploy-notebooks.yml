@@ -76,7 +76,7 @@ jobs:
           # Deploy the notebooks using Databricks CLI
           databricks workspace import_dir \
             ${{ inputs.notebooksPath }} \
-            /Workspace/Users/${{ inputs.dbx-env }}
+            /live
           # https://endjin.com/blog/2019/09/import-and-export-notebooks-in-databricks
 
           echo "Deployment complete."
