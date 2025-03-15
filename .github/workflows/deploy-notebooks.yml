@@ -33,38 +33,44 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Azure Login
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: "3be2ce56-4a5f-4034-88d7-2953d1819ed3"
-
-
-      - name: Configure Azure CLI
+      - name: Debug Secrets
         run: |
-          az config set extension.use_dynamic_install=yes_without_prompt
-          az config set extension.dynamic_install_allow_preview=true
+          echo "AZURE_CLIENT_ID is set to: ${{ secrets.AZURE_CLIENT_ID }}"
+          echo "AZURE_TENANT_ID is set to: ${{ secrets.AZURE_TENANT_ID }}"
+      
 
-      - name: Deploy Databricks Notebooks
-        env:
-          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-        run: |
-          echo "Deploying notebooks to ${{ inputs.env }} environment"
-          echo "Using resource group: ${{ inputs.resourceGroupName }}"
-          echo "Notebooks path: ${{ inputs.notebooksPath }}"
+      # - name: Azure Login
+      #   uses: azure/login@v2
+      #   with:
+      #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
+      #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+      #     subscription-id: "3be2ce56-4a5f-4034-88d7-2953d1819ed3"
 
-          # Deploy the notebooks using Databricks CLI
-          az databricks workspace import_dir \
-            --profile ${{ inputs.env }} \
-            --source ${{ inputs.notebooksPath }} \
-            --destination /Workspace/Users/${{ inputs.env }}
 
-          echo "Deployment complete."
+      # - name: Configure Azure CLI
+      #   run: |
+      #     az config set extension.use_dynamic_install=yes_without_prompt
+      #     az config set extension.dynamic_install_allow_preview=true
 
-          # name: db1
+      # - name: Deploy Databricks Notebooks
+      #   env:
+      #     ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      #     ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      #     ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      #   run: |
+      #     echo "Deploying notebooks to ${{ inputs.env }} environment"
+      #     echo "Using resource group: ${{ inputs.resourceGroupName }}"
+      #     echo "Notebooks path: ${{ inputs.notebooksPath }}"
+
+      #     # Deploy the notebooks using Databricks CLI
+      #     az databricks workspace import_dir \
+      #       --profile ${{ inputs.env }} \
+      #       --source ${{ inputs.notebooksPath }} \
+      #       --destination /Workspace/Users/${{ inputs.env }}
+
+      #     echo "Deployment complete."
+
+      #     # name: db1
 
 # on: [push]
 
