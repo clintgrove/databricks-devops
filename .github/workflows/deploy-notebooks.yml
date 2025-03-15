@@ -69,6 +69,7 @@
 
       #     # name: db1
 
+name: db1      
 on: [push]
 
 permissions:
@@ -82,7 +83,7 @@ jobs:
       run: |
           echo "AZURE_CLIENT_ID is set to: ${{ secrets.AZURE_CLIENT_ID }}"
           echo "AZURE_TENANT_ID is set to: ${{ secrets.AZURE_TENANT_ID }}"
-          
+
     - uses: azure/login@v2
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}

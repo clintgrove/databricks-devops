@@ -25,6 +25,6 @@ jobs:
     with:
       stageId: "Deploy_to_Prod_Environment"
       dbx-env: prod
-      resourceGroupName: "dbr-analytics-dev"
+      resourceGroupName: "dbr-analytics-prod"
       serviceConnection: "clintazrealallrgs"
       notebooksPath: "dbx-using-cicdtools-githubactions/notebooks"
