@@ -1,61 +1,85 @@
-name: db1
+# File: .github/workflows/workflow.yml
 
-on:
-  workflow_call:
-    inputs:
-      stageId:
-        required: true
-        type: string
-      env:
-        required: true
-        type: string
-      environmentName:
-        required: true
-        type: string
-      resourceGroupName:
-        required: true
-        type: string
-      serviceConnection:
-        required: true
-        type: string
-      notebooksPath:
-        required: true
-        type: string
+on: [push]
+
+name: Run Azure Login With a Service Principal Secret
 
 jobs:
-  deploy-notebooks:
+
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
 
-      - name: Azure Login
-        uses: azure/login@v2
-        with:
-          auth-type: SERVICE_PRINCIPAL
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          subscription-id: "3be2ce56-4a5f-4034-88d7-2953d1819ed3"
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+    - uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Configure Azure CLI
-        run: |
-          az config set extension.use_dynamic_install=yes_without_prompt
-          az config set extension.dynamic_install_allow_preview=true
+    - name: Azure CLI script
+      uses: azure/cli@v2
+      with:
+        azcliversion: latest
+        inlineScript: |
+          az account show
 
-      - name: Deploy Databricks Notebooks
-        env:
-          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-        run: |
-          echo "Deploying notebooks to ${env} environment"
-          echo "Using resource group: ${resourceGroupName}"
-          echo "Notebooks path: ${notebooksPath}"
 
-          # Deploy the notebooks using Databricks CLI or API
-          az databricks workspace import_dir \
-            --profile ${env} \
-            --source ${notebooksPath} \
-            --destination /Workspace/Users/${env}
+# name: db1
 
-          echo "Deployment complete."
+# on:
+#   workflow_call:
+#     inputs:
+#       stageId:
+#         required: true
+#         type: string
+#       env:
+#         required: true
+#         type: string
+#       environmentName:
+#         required: true
+#         type: string
+#       resourceGroupName:
+#         required: true
+#         type: string
+#       serviceConnection:
+#         required: true
+#         type: string
+#       notebooksPath:
+#         required: true
+#         type: string
+
+# jobs:
+#   deploy-notebooks:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v3
+
+#       - name: Azure Login
+#         uses: azure/login@v2
+#         with:
+#           auth-type: SERVICE_PRINCIPAL
+#           client-id: ${{ secrets.AZURE_CLIENT_ID }}
+#           subscription-id: "3be2ce56-4a5f-4034-88d7-2953d1819ed3"
+#           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+
+#       - name: Configure Azure CLI
+#         run: |
+#           az config set extension.use_dynamic_install=yes_without_prompt
+#           az config set extension.dynamic_install_allow_preview=true
+
+#       - name: Deploy Databricks Notebooks
+#         env:
+#           ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+#           ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+#           ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+#         run: |
+#           echo "Deploying notebooks to ${env} environment"
+#           echo "Using resource group: ${resourceGroupName}"
+#           echo "Notebooks path: ${notebooksPath}"
+
+#           # Deploy the notebooks using Databricks CLI or API
+#           az databricks workspace import_dir \
+#             --profile ${env} \
+#             --source ${notebooksPath} \
+#             --destination /Workspace/Users/${env}
+
+#           echo "Deployment complete."
