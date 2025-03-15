@@ -1,4 +1,4 @@
-name: "db1"
+name: "db1-main"
 
 on:
   push:
