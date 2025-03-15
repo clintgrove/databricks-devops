@@ -46,9 +46,9 @@ jobs:
           az config set extension.use_dynamic_install=yes_without_prompt
           az config set extension.dynamic_install_allow_preview=true
 
-      - name: Install Databricks CLI extension
+      - name: Install Databricks CLI
         run: |
-          az extension add --name databricks
+          pip install databricks-cli
 
       - name: Deploy Databricks Notebooks
         env:
@@ -67,6 +67,7 @@ jobs:
             --destination /Workspace/Users/${{ inputs.dbx-env }}
 
           echo "Deployment complete."
+        shell: /usr/bin/bash -e {0}
 
       #     # name: db1
 
