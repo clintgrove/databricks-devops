@@ -6,7 +6,7 @@ on:
       stageId:
         required: true
         type: string
-      env:
+      dbx-env:
         required: true
         type: string
       environmentName:
