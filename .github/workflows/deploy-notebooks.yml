@@ -1,26 +1,26 @@
 name: db1
 
-on:
-  workflow_call:
-    inputs:
-      stageId:
-        required: true
-        type: string
-      env:
-        required: true
-        type: string
-      environmentName:
-        required: true
-        type: string
-      resourceGroupName:
-        required: true
-        type: string
-      serviceConnection:
-        required: true
-        type: string
-      notebooksPath:
-        required: true
-        type: string
+on: [push]
+  # workflow_call:
+  #   inputs:
+  #     stageId:
+  #       required: true
+  #       type: string
+  #     env:
+  #       required: true
+  #       type: string
+  #     environmentName:
+  #       required: true
+  #       type: string
+  #     resourceGroupName:
+  #       required: true
+  #       type: string
+  #     serviceConnection:
+  #       required: true
+  #       type: string
+  #     notebooksPath:
+  #       required: true
+  #       type: string
 
 jobs:
   deploy-notebooks:
