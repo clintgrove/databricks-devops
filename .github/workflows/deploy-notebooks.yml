@@ -1,4 +1,5 @@
-name: db1      
+name: db1
+
 on:
   workflow_call:
     inputs:
@@ -21,6 +22,10 @@ on:
       AZURE_CLIENT_ID:
         required: true
       AZURE_TENANT_ID:
+        required: true
+      DATABRICKS_HOST:
+        required: true
+      DATABRICKS_TOKEN:
         required: true
 
 permissions:
@@ -50,6 +55,13 @@ jobs:
         run: |
           pip install databricks-cli
 
+      - name: Configure Databricks CLI
+        run: |
+          databricks configure --token <<EOF
+          https://adb-1461038884007436.16.azuredatabricks.net/
+          ${{ secrets.DATABRICKS_TOKEN_DEV }}
+          EOF
+
       - name: Deploy Databricks Notebooks
         env:
           ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
@@ -68,55 +80,3 @@ jobs:
 
           echo "Deployment complete."
         shell: /usr/bin/bash -e {0}
-
-      #     # name: db1
-
-# name: db1      
-# on:
-#   workflow_call:
-#     inputs:
-#       stageId:
-#         required: true
-#         type: string
-#       dbx-env:
-#         required: true
-#         type: string
-#       resourceGroupName:
-#         required: true
-#         type: string
-#       serviceConnection:
-#         required: true
-#         type: string
-#       notebooksPath:
-#         required: true
-#         type: string
-#     secrets:
-#       AZURE_CLIENT_ID:
-#         required: true
-#       AZURE_TENANT_ID:
-#         required: true
-
-# permissions:
-#   id-token: write
-#   contents: read
-# jobs:
-#   deploy-notebooks:
-#     runs-on: ubuntu-latest
-#     steps:
-#     - name: Debug Secrets
-#       run: |
-#           echo "AZURE_CLIENT_ID is set to: ${{ secrets.AZURE_CLIENT_ID }}"
-#           echo "AZURE_TENANT_ID is set to: ${{ secrets.AZURE_TENANT_ID }}"
-
-#     - uses: azure/login@v2
-#       with:
-#         client-id: ${{ secrets.AZURE_CLIENT_ID }}
-#         tenant-id: ${{ secrets.AZURE_TENANT_ID }}   
-#         subscription-id: "3be2ce56-4a5f-4034-88d7-2953d1819ed3"
-
-#     - name: Azure CLI script
-#       uses: azure/cli@v2
-#       with:
-#         azcliversion: latest
-#         inlineScript: |
-#           az account show
