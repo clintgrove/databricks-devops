@@ -35,7 +35,7 @@ jobs:
           auth-type: SERVICE_PRINCIPAL
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           subscription-id: "3be2ce56-4a5f-4034-88d7-2953d1819ed3"
-          tenant-id": ${{ secrets.AZURE_TENANT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
 
       - name: Configure Azure CLI
         run: |
