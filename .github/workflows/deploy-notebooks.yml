@@ -58,10 +58,10 @@ jobs:
           EOF
 
       - name: Deploy Databricks Notebooks
-        env:
-          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        # env:
+        #   ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        #   ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+        #   ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         run: |
           echo "Deploying notebooks to ${{ inputs.dbx-env }} environment"
           echo "Using resource group: ${{ inputs.resourceGroupName }}"
