@@ -75,6 +75,7 @@ jobs:
 
           # Deploy the notebooks using Databricks CLI
           databricks workspace import_dir \
+            --overwrite \
             ${{ inputs.notebooksPath }} \
             /live
           # https://endjin.com/blog/2019/09/import-and-export-notebooks-in-databricks
