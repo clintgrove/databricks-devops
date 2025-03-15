@@ -12,19 +12,22 @@ permissions:
 
 jobs:
   db1:
-    uses: ./.github/workflows/deploy-notebooks.yml
+    uses: ./.github/workflows/deploy-notebooks.yml@getgithubtowork
     with:
       stageId: "Deploy_to_Dev_Environment"
       dbx-env: dev
       resourceGroupName: "dbr-analytics-dev"
       serviceConnection: "clintazrealallrgs"
       notebooksPath: "dbx-using-cicdtools-githubactions/notebooks"
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
 
-  deploy-prod:
-    uses: ./.github/workflows/deploy-notebooks.yml
-    with:
-      stageId: "Deploy_to_Prod_Environment"
-      dbx-env: prod
-      resourceGroupName: "dbr-analytics-prod"
-      serviceConnection: "clintazrealallrgs"
-      notebooksPath: "dbx-using-cicdtools-githubactions/notebooks"
+  # deploy-prod:
+  #   uses: ./.github/workflows/deploy-notebooks.yml
+  #   with:
+  #     stageId: "Deploy_to_Prod_Environment"
+  #     dbx-env: prod
+  #     resourceGroupName: "dbr-analytics-prod"
+  #     serviceConnection: "clintazrealallrgs"
+  #     notebooksPath: "dbx-using-cicdtools-githubactions/notebooks"
