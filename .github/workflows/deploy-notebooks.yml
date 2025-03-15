@@ -70,7 +70,24 @@
       #     # name: db1
 
 name: db1      
-on: [push]
+on:
+  workflow_call:
+    inputs:
+      stageId:
+        required: true
+        type: string
+      dbx-env:
+        required: true
+        type: string
+      resourceGroupName:
+        required: true
+        type: string
+      serviceConnection:
+        required: true
+        type: string
+      notebooksPath:
+        required: true
+        type: string
 
 permissions:
   id-token: write
