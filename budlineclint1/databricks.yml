@@ -16,16 +16,16 @@ targets:
     mode: development
     default: true
     workspace:
-      host: https://adb-1432846341870043.3.azuredatabricks.net/ #https://adb-5117909456747887.7.azuredatabricks.net
+      host: https://adb-387231224396630.10.azuredatabricks.net #one on left is 5620 contoso # non prod microsoft --> https://adb-1432846341870043.3.azuredatabricks.net/ 
 
   prod:
     mode: production
     workspace:
-      host: https://adb-2740900383965366.6.azuredatabricks.net #https://adb-5117909456747887.7.azuredatabricks.net
+      host: https://adb-110239645136689.9.azuredatabricks.net #one on left is 5620 contoso dbx-groove-production # non prod microsoft --> https://adb-2740900383965366.6.azuredatabricks.net #https://adb-5117909456747887.7.azuredatabricks.net
       # We explicitly specify /Workspace/Users/clintgrove@microsoft.com to make sure we only have a single copy.
-      root_path: /Workspace/Users/clintgrove@microsoft.com/.bundle/${bundle.name}/${bundle.target}
+      root_path: /Workspace/productionstuff/${bundle.name}/${bundle.target}
     permissions:
-      - user_name: clintgrove@microsoft.com
+      - user_name: admin@mngenvmcap562520.onmicrosoft.com
         level: CAN_MANAGE
     run_as:
-      user_name: clintgrove@microsoft.com
+      user_name: admin@mngenvmcap562520.onmicrosoft.com #clintgrove@microsoft.com

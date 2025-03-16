@@ -23,7 +23,7 @@ setup(
     # to ensure that changes to wheel package are picked up when used on all-purpose clusters
     version=budlineclint1.__version__ + "+" + local_version,
     url="https://databricks.com",
-    author="clintgrove@microsoft.com",
+    author="admin@mngenvmcap562520.onmicrosoft.com",
     description="wheel file based on budlineclint1/src",
     packages=find_packages(where="./src"),
     package_dir={"": "src"},
