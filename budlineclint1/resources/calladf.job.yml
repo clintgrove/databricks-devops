@@ -1,0 +1,46 @@
+# The main job for budlineclint1.
+resources:
+  jobs:
+    JOB_CALLADF:
+      name: JOB_CALLADF
+
+      trigger:
+        # Run this job every day, exactly one day from the last run; see https://docs.databricks.com/api/workspace/jobs/create#trigger
+        periodic:
+          interval: 1
+          unit: DAYS
+
+      email_notifications:
+        on_failure:
+          - clintgrove@microsoft.com
+
+      tasks:
+        - task_key: notebook_task
+          job_cluster_key: job_cluster
+          notebook_task:
+            notebook_path: ../src/DataFactoryOperations/Data Factory Notebook Fire off pipeline.ipynb
+        
+        - task_key: main_task
+          depends_on:
+            - task_key: notebook_task
+          
+          job_cluster_key: job_cluster
+          python_wheel_task:
+            package_name: budlineclint1
+            entry_point: main
+          libraries:
+            - pypi:
+                package: azure-identity
+                repo: https://pypi.org/simple
+            - pypi:
+                package: azure-mgmt-datafactory
+                repo: https://pypi.org/simple
+
+      job_clusters:
+        - job_cluster_key: job_cluster
+          new_cluster:
+            spark_version: 16.2.x-scala2.12
+            node_type_id: Standard_D8pds_v6
+            autoscale:
+                min_workers: 1
+                max_workers: 4
