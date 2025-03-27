@@ -16,33 +16,39 @@ parameters:
   type: string
 
 jobs:
-- deployment: ${{ parameters.stageId }} # Parameterized job name for uniqueness
+- deployment: ${{ parameters.stageId }}
   displayName: "Deploy Databricks Notebooks to ${{ parameters.env }}"
   environment: ${{ parameters.environmentName }}
   strategy:
     runOnce:
       deploy:
         steps:
-        # Install Azure CLI (this is for self-hosted agents)
+        # Install PowerShell Core (pwsh) and Azure CLI
         - task: PowerShell@2
-          displayName: "Install Azure CLI"
+          displayName: "Install PowerShell Core and Azure CLI"
           inputs:
             targetType: 'inline'
             script: |
+              echo "Installing PowerShell Core..."
+              Invoke-WebRequest -Uri https://github.com/PowerShell/PowerShell/releases/download/v7.3.6/PowerShell-7.3.6-win-x64.msi -OutFile .\PowerShell.msi
+              Start-Process msiexec.exe -ArgumentList '/I PowerShell.msi /quiet /norestart' -Wait
+              $env:Path += ";C:\Program Files\PowerShell\7"
+
               echo "Installing Azure CLI..."
               Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi
               Start-Process msiexec.exe -ArgumentList '/I AzureCLI.msi /quiet /norestart' -Wait
-              # Add Azure CLI to PATH for the current process
               $env:Path += ";C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin"
 
         # Verify installations
         - task: PowerShell@2
-          displayName: "Verify Azure CLI and PowerShell Core"
+          displayName: "Verify PowerShell Core and Azure CLI"
           inputs:
             targetType: 'inline'
             script: |
-              # Explicitly add Azure CLI path to ensure it's available
-              $env:Path += ";C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin"
+              echo "Verifying PowerShell Core (pwsh)..."
+              pwsh -Command "$PSVersionTable"
+
+              echo "Verifying Azure CLI..."
               az --version
 
         - checkout: self
@@ -55,26 +61,26 @@ jobs:
             scriptType: pscore
             scriptLocation: inlineScript
             inlineScript: |
-                # Set Azure CLI to use dynamic installs
-                az config set extension.use_dynamic_install=yes_without_prompt
-                az config set extension.dynamic_install_allow_preview=true
+              # Set Azure CLI to use dynamic installs
+              az config set extension.use_dynamic_install=yes_without_prompt
+              az config set extension.dynamic_install_allow_preview=true
 
-                # Get Databricks workspace ID
-                $databricksWorkspace = (az resource list --resource-group ${{ parameters.resourceGroupName }} --query "[?type=='Microsoft.Databricks/workspaces'].id" --output tsv)
+              # Get Databricks workspace ID
+              $databricksWorkspace = (az resource list --resource-group ${{ parameters.resourceGroupName }} --query "[?type=='Microsoft.Databricks/workspaces'].id" --output tsv)
 
-                # Get Databricks workspace details
-                $databricksWorkspaceInfo = (az databricks workspace show --ids $databricksWorkspace --output json | ConvertFrom-Json)
+              # Get Databricks workspace details
+              $databricksWorkspaceInfo = (az databricks workspace show --ids $databricksWorkspace --output json | ConvertFrom-Json)
 
-                # Get Databricks access token (replace with your logic)
-                $bearerToken = & "$(Build.Repository.LocalPath)/dbx-using-cicdtools-azdevops/scripts/DatabricksToken.ps1" -databricksworkspaceResourceId $databricksWorkspaceInfo.id -databricksWorkspaceUrl $databricksWorkspaceInfo.workspaceUrl
+              # Get Databricks access token (replace with your logic)
+              $bearerToken = & "$(Build.Repository.LocalPath)/dbx-using-cicdtools-azdevops/scripts/DatabricksToken.ps1" -databricksworkspaceResourceId $databricksWorkspaceInfo.id -databricksWorkspaceUrl $databricksWorkspaceInfo.workspaceUrl
 
-                # Install azure.databricks.cicd.tools module
-                Install-Module -Name azure.databricks.cicd.tools -Force -Scope CurrentUser
+              # Install azure.databricks.cicd.tools module
+              Install-Module -Name azure.databricks.cicd.tools -Force -Scope CurrentUser
 
-                # Get Git repository path for Notebooks then deploy to Databricks workspace to allocated location
+              # Get Git repository path for Notebooks then deploy to Databricks workspace to allocated location
+              Import-DatabricksFolder -BearerToken $bearerToken -Region $databricksWorkspaceInfo.location -LocalPath "$(Build.Repository.LocalPath)/${{ parameters.notebooksPath }}" -DatabricksPath "/live" -Clean
+              Import-Module -Name azure.databricks.cicd.tools
 
-
-                Import-DatabricksFolder -BearerToken $bearerToken -Region $databricksWorkspaceInfo.location -LocalPath "$(Build.Repository.LocalPath)/${{ parameters.notebooksPath }}" -DatabricksPath "/live" -Clean                Import-Module -Name azure.databricks.cicd.tools
         - task: PowerShell@2
           displayName: "Debug Environment Variables"
           inputs:
