@@ -1,9 +1,9 @@
 variables:
   dev-environment-name :  'dev'
-  dev-resource-group-name :  'dbr-analytics-dev'
-  dev-service-connection-name :  'clintazrealallrgs'
+  dev-resource-group-name :  'analytics' #the resource group name in Azure where the Databricks workspace is located
+  dev-service-connection-name :  'clintazrealallrgs-fiftysix' #the service connection name in Azure DevOps that is used to connect to the Databricks workspace
 
 
   prod-environment-name :  'prod'
-  prod-resource-group-name :  'dbr-analytics-prod'
-  prod-service-connection-name :  'clintazrealallrgs'
+  prod-resource-group-name :  'analytics-prod' #the resource group name in Azure where the Databricks workspace is located
+  prod-service-connection-name :  'clintazrealallrgs-fiftysix' #the service connection name in Azure DevOps that is used to connect to the Databricks workspace

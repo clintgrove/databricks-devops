@@ -19,22 +19,14 @@ resources:
           job_cluster_key: job_cluster
           notebook_task:
             notebook_path: ../src/DataFactoryOperations/Data Factory Notebook Fire off pipeline.ipynb
-        
-        - task_key: main_task
-          depends_on:
-            - task_key: notebook_task
-          
-          job_cluster_key: job_cluster
-          python_wheel_task:
-            package_name: budlineclint1
-            entry_point: main
           libraries:
-            - pypi:
-                package: azure-identity
-                repo: https://pypi.org/simple
-            - pypi:
-                package: azure-mgmt-datafactory
-                repo: https://pypi.org/simple
+          - pypi:
+              package: azure-identity
+              repo: https://pypi.org/simple
+          - pypi:
+              package: azure-mgmt-datafactory
+              repo: https://pypi.org/simple
+        
 
       job_clusters:
         - job_cluster_key: job_cluster
