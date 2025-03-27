@@ -56,7 +56,7 @@ jobs:
             scriptLocation: inlineScript
             inlineScript: |
               # Set Azure CLI to use dynamic installs
-              $env:Path += ";C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin"
+              # $env:Path += ";C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin"
               az config set extension.use_dynamic_install=yes_without_prompt
               az config set extension.dynamic_install_allow_preview=true
 
