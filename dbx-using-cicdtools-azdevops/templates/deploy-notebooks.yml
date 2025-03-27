@@ -24,26 +24,16 @@ jobs:
       deploy:
         steps:
         # Install Azure CLI (this is for self-hosted agents)
-        # - task: PowerShell@2
-        #   displayName: "Install Azure CLI"
-        #   inputs:
-        #     targetType: 'inline'
-        #     script: |
-        #       echo "Installing Azure CLI..."
-        #       Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi
-        #       Start-Process msiexec.exe -ArgumentList '/I AzureCLI.msi /quiet /norestart' -Wait
-        #       # Add Azure CLI to PATH for the current process
-        #       $env:Path += ";C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin"
-
-        # # Install PowerShell Core
-        # - task: PowerShell@2
-        #   displayName: "Install PowerShell Core"
-        #   inputs:
-        #     targetType: 'inline'
-        #     script: |
-        #       echo "Installing PowerShell Core..."
-        #       Invoke-WebRequest -Uri https://github.com/PowerShell/PowerShell/releases/download/v7.3.6/PowerShell-7.3.6-win-x64.msi -OutFile .\PowerShell.msi
-        #       Start-Process msiexec.exe -ArgumentList '/I PowerShell.msi /quiet /norestart' -Wait
+        - task: PowerShell@2
+          displayName: "Install Azure CLI"
+          inputs:
+            targetType: 'inline'
+            script: |
+              echo "Installing Azure CLI..."
+              Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi
+              Start-Process msiexec.exe -ArgumentList '/I AzureCLI.msi /quiet /norestart' -Wait
+              # Add Azure CLI to PATH for the current process
+              $env:Path += ";C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin"
 
         # Verify installations
         - task: PowerShell@2
@@ -54,7 +44,6 @@ jobs:
               # Explicitly add Azure CLI path to ensure it's available
               $env:Path += ";C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin"
               az --version
-              pwsh -Command '$PSVersionTable'
 
         - checkout: self
           displayName: "Checkout repository"
