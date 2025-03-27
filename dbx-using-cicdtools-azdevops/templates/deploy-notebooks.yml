@@ -42,7 +42,7 @@ jobs:
             targetType: 'inline'
             script: |
               # Explicitly add Azure CLI path to ensure it's available
-              $env:Path += ";C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin"
+              # $env:Path += ";C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin"
               az --version
 
         - checkout: self
