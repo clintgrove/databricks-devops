@@ -37,7 +37,7 @@ jobs:
 
         # Verify installations
         - task: PowerShell@2
-          displayName: "Verify Azure CLI and PowerShell Core"
+          displayName: "Verify Azure CLI"
           inputs:
             targetType: 'inline'
             script: |
@@ -75,10 +75,3 @@ jobs:
               # Get Git repository path for Notebooks then deploy to Databricks workspace to allocated location
               Import-DatabricksFolder -BearerToken $bearerToken -Region $databricksWorkspaceInfo.location -LocalPath "$(Build.Repository.LocalPath)/${{ parameters.notebooksPath }}" -DatabricksPath "/live" -Clean
               Import-Module -Name azure.databricks.cicd.tools
-
-        - task: PowerShell@2
-          displayName: "Debug Environment Variables"
-          inputs:
-            targetType: 'inline'
-            script: |
-              Get-ChildItem Env:
