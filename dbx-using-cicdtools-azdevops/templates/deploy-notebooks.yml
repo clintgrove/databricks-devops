@@ -32,7 +32,6 @@ jobs:
               echo "Installing Azure CLI..."
               Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi
               Start-Process msiexec.exe -ArgumentList '/I AzureCLI.msi /quiet /norestart' -Wait
-              # Add Azure CLI to PATH for the current process
               $env:Path += ";C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin"
 
         # Verify installations
@@ -41,8 +40,6 @@ jobs:
           inputs:
             targetType: 'inline'
             script: |
-              # Explicitly add Azure CLI path to ensure it's available
-              # $env:Path += ";C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin"
               az --version
 
         - checkout: self
@@ -55,23 +52,16 @@ jobs:
             scriptType: powershell # Use Windows PowerShell
             scriptLocation: inlineScript
             inlineScript: |
-              # Set Azure CLI to use dynamic installs
-              # $env:Path += ";C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin"
               az config set extension.use_dynamic_install=yes_without_prompt
               az config set extension.dynamic_install_allow_preview=true
 
-              # Get Databricks workspace ID
               $databricksWorkspace = (az resource list --resource-group ${{ parameters.resourceGroupName }} --query "[?type=='Microsoft.Databricks/workspaces'].id" --output tsv)
 
-              # Get Databricks workspace details
               $databricksWorkspaceInfo = (az databricks workspace show --ids $databricksWorkspace --output json | ConvertFrom-Json)
 
-              # Get Databricks access token (replace with your logic)
               $bearerToken = & "$(Build.Repository.LocalPath)/dbx-using-cicdtools-azdevops/scripts/DatabricksToken.ps1" -databricksworkspaceResourceId $databricksWorkspaceInfo.id -databricksWorkspaceUrl $databricksWorkspaceInfo.workspaceUrl
 
-              # Install azure.databricks.cicd.tools module
               Install-Module -Name azure.databricks.cicd.tools -Force -Scope CurrentUser
 
-              # Get Git repository path for Notebooks then deploy to Databricks workspace to allocated location
               Import-DatabricksFolder -BearerToken $bearerToken -Region $databricksWorkspaceInfo.location -LocalPath "$(Build.Repository.LocalPath)/${{ parameters.notebooksPath }}" -DatabricksPath "/live" -Clean
               Import-Module -Name azure.databricks.cicd.tools
