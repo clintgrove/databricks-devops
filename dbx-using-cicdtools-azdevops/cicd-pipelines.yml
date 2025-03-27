@@ -10,23 +10,47 @@ variables:
     value: "dbx-using-cicdtools-azdevops/notebooks"
 
 # pool:
-#   vmImage:  $(vmImageName)
+#   vmImage:  $(vmImageName) (this is if you are using a azurehosted agent)
+
 pool:
-  name: 'fiftysix-agents-devops' # Specify the correct agent pool name
+  name: 'fiftysix-agents-devops' # Specify the agent pool name
   demands:
     - Agent.Name -equals vm-fiftysix0=-agent1 # Target the specific agent
 
 stages:
  - stage: DoingDev
    jobs:
-    - template: templates/deploy-notebooks.yml
-      parameters:
-        stageId: "Deploy_to_Dev_Environment"
-        env: "dev"
-        environmentName: ${{ variables['dev-environment-name'] }}
-        resourceGroupName: ${{ variables['dev-resource-group-name'] }}
-        serviceConnection: ${{ variables['dev-service-connection-name'] }}
-        notebooksPath: $(notebooksPath)
+    - job: SetupAndDeploy
+      steps:
+        # Install Azure CLI  (this is for self-hosted agents)
+        - script: |
+            echo "Installing Azure CLI..."
+            Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi
+            Start-Process msiexec.exe -ArgumentList '/I AzureCLI.msi /quiet /norestart' -Wait
+          displayName: "Install Azure CLI"
+
+        # Install PowerShell Core
+        - script: |
+            echo "Installing PowerShell Core..."
+            Invoke-WebRequest -Uri https://github.com/PowerShell/PowerShell/releases/download/v7.3.6/PowerShell-7.3.6-win-x64.msi -OutFile .\PowerShell.msi
+            Start-Process msiexec.exe -ArgumentList '/I PowerShell.msi /quiet /norestart' -Wait
+          displayName: "Install PowerShell Core"
+
+        # Verify installations
+        - script: |
+            az --version
+            pwsh -Command '$PSVersionTable'
+          displayName: "Verify Azure CLI and PowerShell Core"
+
+        # Deploy Notebooks
+        - template: templates/deploy-notebooks.yml
+          parameters:
+            stageId: "Deploy_to_Dev_Environment"
+            env: "dev"
+            environmentName: ${{ variables['dev-environment-name'] }}
+            resourceGroupName: ${{ variables['dev-resource-group-name'] }}
+            serviceConnection: ${{ variables['dev-service-connection-name'] }}
+            notebooksPath: $(notebooksPath)
 
  - stage: DoingProd
    dependsOn: DoingDev  # Ensures PROD runs only after DEV succeeds
