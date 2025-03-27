@@ -51,6 +51,8 @@ jobs:
           inputs:
             targetType: 'inline'
             script: |
+              # Explicitly add Azure CLI path to ensure it's available
+              $env:Path += ";C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin"
               az --version
               pwsh -Command '$PSVersionTable'
 
@@ -81,5 +83,12 @@ jobs:
                 Install-Module -Name azure.databricks.cicd.tools -Force -Scope CurrentUser
 
                 # Get Git repository path for Notebooks then deploy to Databricks workspace to allocated location
-                Import-Module -Name azure.databricks.cicd.tools
-                Import-DatabricksFolder -BearerToken $bearerToken -Region $databricksWorkspaceInfo.location -LocalPath "$(Build.Repository.LocalPath)/${{ parameters.notebooksPath }}" -DatabricksPath "/live" -Clean
+
+
+                Import-DatabricksFolder -BearerToken $bearerToken -Region $databricksWorkspaceInfo.location -LocalPath "$(Build.Repository.LocalPath)/${{ parameters.notebooksPath }}" -DatabricksPath "/live" -Clean                Import-Module -Name azure.databricks.cicd.tools
+        - task: PowerShell@2
+          displayName: "Debug Environment Variables"
+          inputs:
+            targetType: 'inline'
+            script: |
+              Get-ChildItem Env:
