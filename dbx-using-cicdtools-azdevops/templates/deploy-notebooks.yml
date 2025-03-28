@@ -65,8 +65,8 @@ jobs:
         - task: PowerShell@2
           displayName: "Configure Databricks CLI"
           env:
-              DATABRICKS_HOST: {{ parameters.databricksHost }}
-              DATABRICKS_TOKEN: {{ parameters.databricksToken }}
+            DATABRICKS_HOST: ${{ parameters.databricksHost }}
+            DATABRICKS_TOKEN: ${{ parameters.databricksToken }}
           inputs:
             targetType: 'inline'
             script: |
