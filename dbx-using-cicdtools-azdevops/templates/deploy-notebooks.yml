@@ -60,7 +60,9 @@ jobs:
               } else {
                   Write-Host "Databricks CLI is already installed."
               }
-              databricks configure --host {{ parameters.databricksHost }} --token {{ parameters.databricksToken }}
+              $databricksHost = "${{ parameters.databricksHost }}"
+              $databricksToken = "${{ parameters.databricksToken }}"
+              databricks configure --host $databricksHost --token $databricksToken
 
         - task: PowerShell@2
           displayName: "Upload Notebooks via Databricks CLI"
