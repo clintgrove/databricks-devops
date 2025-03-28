@@ -30,17 +30,15 @@ steps:
     pip install databricks-cli
   displayName: 'Install Databricks CLI'
 
-
-
 - task: AzureCLI@2
   inputs:
     azureSubscription: ${{ parameters.serviceConnection }}
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
-      export CLIENT_ID="557fa95a-5c11-4b0c-987a-d38b6633b07b"
-      # Use CLIENT_SECRET directly from the variable group
-      export CLIENT_SECRET=$DATABRICKS_CLIENT_SECRET
+      # export CLIENT_ID="557fa95a-5c11-4b0c-987a-d38b6633b07b"
+      # # Use CLIENT_SECRET directly from the variable group
+      # export CLIENT_SECRET=$DATABRICKS_CLIENT_SECRET
 
       response=$(curl --silent --request POST \
       --url https://adb-1055291633315799.19.azuredatabricks.net//oidc/v1/token \
@@ -50,11 +48,36 @@ steps:
       DATABRICKS_HOST=$(DATABRICKS_HOST)
       echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\ntoken = $DATABRICKS_TOKEN" > ~/.databrickscfg
       databricks workspace ls
-  env:
-    DATABRICKS_HOST: https://adb-1055291633315799.19.azuredatabricks.net
-    DATABRICKS_CLIENT_SECRET: $(databrickstoken-appreg-srvcondevops-dev) # Reference the secret from the variable group
-    DATABRICKS_CLIENT_ID: 557fa95a-5c11-4b0c-987a-d38b6633b07b
+  # env:
+  #   DATABRICKS_HOST: https://adb-1055291633315799.19.azuredatabricks.net
+  #   DATABRICKS_CLIENT_SECRET: $(databrickstoken-appreg-srvcondevops-dev) # Reference the secret from the variable group
+  #   DATABRICKS_CLIENT_ID: 557fa95a-5c11-4b0c-987a-d38b6633b07b
   displayName: 'Authenticate with Azure CLI and Configure Databricks CLI'
+
+
+# - task: AzureCLI@2
+#   inputs:
+#     azureSubscription: ${{ parameters.serviceConnection }}
+#     scriptType: bash
+#     scriptLocation: inlineScript
+#     inlineScript: |
+#       export CLIENT_ID="557fa95a-5c11-4b0c-987a-d38b6633b07b"
+#       # Use CLIENT_SECRET directly from the variable group
+#       export CLIENT_SECRET=$DATABRICKS_CLIENT_SECRET
+
+#       response=$(curl --silent --request POST \
+#       --url https://adb-1055291633315799.19.azuredatabricks.net//oidc/v1/token \
+#       --user "$CLIENT_ID:$CLIENT_SECRET" \
+#       --data 'grant_type=client_credentials&scope=all-apis')
+#       DATABRICKS_TOKEN=$(echo $response | jq -r '.access_token')
+#       DATABRICKS_HOST=$(DATABRICKS_HOST)
+#       echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\ntoken = $DATABRICKS_TOKEN" > ~/.databrickscfg
+#       databricks workspace ls
+#   env:
+#     DATABRICKS_HOST: https://adb-1055291633315799.19.azuredatabricks.net
+#     DATABRICKS_CLIENT_SECRET: $(databrickstoken-appreg-srvcondevops-dev) # Reference the secret from the variable group
+#     DATABRICKS_CLIENT_ID: 557fa95a-5c11-4b0c-987a-d38b6633b07b
+#   displayName: 'Authenticate with Azure CLI and Configure Databricks CLI'
 
 
 # - task: AzureCLI@2
