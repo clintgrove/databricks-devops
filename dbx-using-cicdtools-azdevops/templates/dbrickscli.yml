@@ -36,7 +36,8 @@ jobs:
           displayName: 'Install Databricks CLI'
 
         - script: |
-            mkdir -p ~/.databrickscfg
+            mkdir -p ~/.databricks
+            touch ~/.databrickscfg
             echo "[DEFAULT]" > ~/.databrickscfg
             echo "host = $DATABRICKS_HOST" >> ~/.databrickscfg
             echo "token = $DATABRICKS_TOKEN" >> ~/.databrickscfg
