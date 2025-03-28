@@ -57,8 +57,15 @@ jobs:
               $env:DATABRICKS_HOST = '${{ parameters.databricksHost }}'
               $env:DATABRICKS_TOKEN = '${{ parameters.databricksToken }}'
               Set-Content -Path "$env:USERPROFILE\.databrickscfg" -Value "[DEFAULT]`nhost=$env:DATABRICKS_HOST`ntoken=$env:DATABRICKS_TOKEN"
-              echo "Configured Databricks CLI"
+              databricks configure --token --host $env:DATABRICKS_HOST --token $env:DATABRICKS_TOKEN
+              if ($?) {
+                echo "Configured Databricks CLI successfully"
+              } else {
+                echo "Failed to configure Databricks CLI"
+                exit 1
+              }
           displayName: 'Configure Databricks CLI'
+          continueOnError: true
 
         # Deploy the notebooks
         - script: |
@@ -67,6 +74,10 @@ jobs:
             echo "Notebooks path: ${{ parameters.notebooksPath }}"
 
             databricks workspace import-dir ${{ parameters.notebooksPath }} /live
-
-            echo "Deployment complete."
+            if ($?) {
+              echo "Deployment complete."
+            } else {
+              echo "Deployment failed."
+              exit 1
+            }
           displayName: 'Deploy Databricks Notebooks'
