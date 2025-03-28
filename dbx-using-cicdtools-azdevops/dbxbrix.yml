@@ -38,7 +38,7 @@ steps:
     inlineScript: |
       # Authenticate with Azure CLI and set Databricks token
       DATABRICKS_TOKEN=$(databrickstoken-appreg-srvcondevops-dev)
-      DATABRICKS_HOST=${{ parameters.databricksHost }}
+      DATABRICKS_HOST=$(DATABRICKS_HOST)
       echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\ntoken = $DATABRICKS_TOKEN" > ~/.databrickscfg
   env:
     DATABRICKS_HOST: https://adb-1055291633315799.19.azuredatabricks.net
