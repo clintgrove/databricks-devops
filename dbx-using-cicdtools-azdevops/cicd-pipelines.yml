@@ -35,22 +35,20 @@ stages:
          serviceConnection: ${{ variables['dev-service-connection-name'] }}
          notebooksPath: $(notebooksPath)
          databricksHost: ${{ variables['dev-databricks-host'] }}
-       env:
-         DATABRICKS_TOKEN: ${{ variables['databrickstoken-appreg-srvcondevops-dev'] }}
+         databricksToken: ${{ variables['databrickstoken-appreg-srvcondevops-dev'] }}
 
- - stage: DoingProd
-   dependsOn: DoingDev  # Ensures PROD runs only after DEV succeeds
-   variables:
-     - group: Prod-vars
-   jobs:
-    - template: templates/dbrickscli.yml
-      parameters:
-        stageId: "Deploy_to_PROD_Environment"
-        env: "prod"
-        environmentName: ${{ variables['prod-environment-name'] }}
-        resourceGroupName: ${{ variables['prod-resource-group-name'] }}
-        serviceConnection: ${{ variables['prod-service-connection-name'] }}
-        notebooksPath: $(notebooksPath)
-        databricksHost: ${{ variables['prod-databricks-host'] }}
-      env:
-        DATABRICKS_TOKEN: ${{ variables['dbxtoken'] }}
+#  - stage: DoingProd
+#    dependsOn: DoingDev  # Ensures PROD runs only after DEV succeeds
+#    variables:
+#      - group: Prod-vars
+#    jobs:
+#     - template: templates/dbrickscli.yml
+#       parameters:
+#         stageId: "Deploy_to_PROD_Environment"
+#         env: "prod"
+#         environmentName: ${{ variables['prod-environment-name'] }}
+#         resourceGroupName: ${{ variables['prod-resource-group-name'] }}
+#         serviceConnection: ${{ variables['prod-service-connection-name'] }}
+#         notebooksPath: $(notebooksPath)
+#         databricksHost: ${{ variables['prod-databricks-host'] }}
+#         databricksToken: ${{ variables['databrickstoken-appreg-srvcondevops-dev'] }}

@@ -48,7 +48,7 @@ jobs:
           displayName: 'Configure Databricks CLI'
           env:
             DATABRICKS_HOST: ${{ parameters.databricksHost }}
-            DATABRICKS_TOKEN: $(DATABRICKS_TOKEN)
+            DATABRICKS_TOKEN: ${{ parameters.databricksToken }}
 
         - script: |
             echo "Testing Databricks CLI authentication..."
@@ -56,7 +56,7 @@ jobs:
           displayName: 'Testing Databricks CLI module'
           env:
             DATABRICKS_HOST: ${{ parameters.databricksHost }}
-            DATABRICKS_TOKEN: $(DATABRICKS_TOKEN)
+            DATABRICKS_TOKEN: ${{ parameters.databricksToken }}
 
         - script: |
             databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live --overwrite
