@@ -58,4 +58,6 @@ steps:
 
 - script: |
     databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live --overwrite
+  env:
+    DATABRICKS_CONFIG_FILE: ~/.databrickscfg
   displayName: 'Upload Notebooks to Databricks Workspace'
