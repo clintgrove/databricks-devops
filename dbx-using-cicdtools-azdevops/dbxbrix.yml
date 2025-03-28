@@ -36,8 +36,14 @@ steps:
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
-      # Authenticate with Azure CLI and set Databricks token
-      DATABRICKS_TOKEN=$(databrickstoken-appreg-srvcondevops-dev)
+      export CLIENT_ID="557fa95a-5c11-4b0c-987a-d38b6633b07b"
+      export CLIENT_SECRET=$(databricksClientId-appreg-srvcondevops-dev)
+
+      response=$(curl --silent --request POST \
+      --url https://adb-1055291633315799.19.azuredatabricks.net//oidc/v1/token \
+      --user "$CLIENT_ID:$CLIENT_SECRET" \
+      --data 'grant_type=client_credentials&scope=all-apis')
+      DATABRICKS_TOKEN=$(echo $response | jq -r '.access_token')
       DATABRICKS_HOST=$(DATABRICKS_HOST)
       echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\ntoken = $DATABRICKS_TOKEN" > ~/.databrickscfg
       databricks workspace ls
