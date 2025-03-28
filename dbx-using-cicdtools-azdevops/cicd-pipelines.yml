@@ -35,7 +35,8 @@ stages:
          serviceConnection: ${{ variables['dev-service-connection-name'] }}
          notebooksPath: $(notebooksPath)
          databricksHost: ${{ variables['dev-databricks-host'] }}
-         databricksToken: ${{ variables['databrickstoken-appreg-srvcondevops-dev'] }} # Ensure this variable is set in Azure DevOps Library variables (under "Pipeline"/"Library" tab)
+       env:
+         DATABRICKS_TOKEN: ${{ variables['databrickstoken-appreg-srvcondevops-dev'] }}
 
  - stage: DoingProd
    dependsOn: DoingDev  # Ensures PROD runs only after DEV succeeds
@@ -51,4 +52,5 @@ stages:
         serviceConnection: ${{ variables['prod-service-connection-name'] }}
         notebooksPath: $(notebooksPath)
         databricksHost: ${{ variables['prod-databricks-host'] }}
-        databricksToken: ${{ variables['dbxtoken'] }} # Ensure this variable is set in Azure DevOps Library variables (under "Pipeline"/"Library" tab)
+      env:
+        DATABRICKS_TOKEN: ${{ variables['dbxtoken'] }}

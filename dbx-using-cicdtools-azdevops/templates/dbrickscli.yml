@@ -12,8 +12,6 @@ parameters:
 - name: notebooksPath
   type: string
 - name: databricksHost
-  type: string
-- name: databricksToken
   type: string  
 
 jobs:
@@ -50,7 +48,7 @@ jobs:
           displayName: 'Configure Databricks CLI'
           env:
             DATABRICKS_HOST: ${{ parameters.databricksHost }}
-            DATABRICKS_TOKEN: ${{ parameters.databricksToken }}
+            DATABRICKS_TOKEN: $(DATABRICKS_TOKEN)
 
         - script: |
             echo "Testing Databricks CLI authentication..."
