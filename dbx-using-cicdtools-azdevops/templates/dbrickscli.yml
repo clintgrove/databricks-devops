@@ -14,7 +14,7 @@ parameters:
 - name: databricksHost
   type: string  
 - name: databricksToken
-  type: securestring
+  type: string
 
 jobs:
 - deployment: ${{ parameters.stageId }}
