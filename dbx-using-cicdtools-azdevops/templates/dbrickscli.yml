@@ -47,7 +47,14 @@ jobs:
             DATABRICKS_TOKEN: ${{ parameters.databricksToken }}
 
         - script: |
-            databricks workspace import_dir ${{ parameters.notebooksPath }} /Workspace/TargetPath --overwrite
+            databricks workspace ls
+          displayName: 'testing databricks-cli module'
+          env:
+            DATABRICKS_HOST: ${{ parameters.databricksHost }}
+            DATABRICKS_TOKEN: ${{ parameters.databricksToken }}
+
+        - script: |
+            databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live --overwrite
           displayName: 'Deploy files to Databricks workspace'
           env:
             DATABRICKS_HOST: $(DATABRICKS_HOST)
