@@ -7,6 +7,8 @@ variables:
   - template: .\env-variables.yml
   - name: notebooksPath
     value: "dbx-using-cicdtools-azdevops/notebooks"
+  - name: databricksClientId-appreg-srvcondevops-dev
+    value: "557fa95a-5c11-4b0c-987a-d38b6633b07b"
 
 # pool:
 #   vmImage:  windows-latest" (this is if you are using a azurehosted agent)
@@ -23,27 +25,9 @@ pool:
 stages:
  - stage: DoingDev
    variables:
-      - group: Dev-vars
-   jobs:
-      # Debug Token Retrieval
-     - job: DebugToken
-       displayName: "Debug Token Retrieval"
-       steps:
-       
-        - bash: |
-            echo "Using an input-macro works: $(databrickstoken-appreg-srvcondevops-dev)"
-
-
-        # - task: PowerShell@2
-        #   inputs:
-        #     targetType: 'inline'
-        #     script: |
-        #         $result = $env:MY_MAPPED_TOKEN
-        #         Write-Host $result.value
-        #   env:
-        #     MY_MAPPED_TOKEN: $(databrickstoken-appreg-srvcondevops-dev) # Maps the secret variable $(token) from my-var-group
-
+     - group: Dev-vars
       # Deploy Notebooks
+   jobs: 
      - template: templates/dbrickscli.yml
        parameters:
          stageId: "Deploy_to_Dev_Environment"
@@ -53,7 +37,8 @@ stages:
          serviceConnection: ${{ variables['dev-service-connection-name'] }}
          notebooksPath: $(notebooksPath)
          databricksHost: ${{ variables['dev-databricks-host'] }}
-         databricksToken: $(databrickstoken-appreg-srvcondevops-dev)
+         databricksClientId: $(databricksClientId-appreg-srvcondevops-dev)
+         databricksClientSecret: $(databricksClientSecret-appreg-srvcondevops-dev)
 
 #  - stage: DoingProd
 #    dependsOn: DoingDev  # Ensures PROD runs only after DEV succeeds
