@@ -29,19 +29,14 @@ stages:
      - job: DebugToken
        displayName: "Debug Token Retrieval"
        steps:
-         - script: |
-             echo "Debugging token retrieval..."
-             echo "Databricks Token from variable group: ${{ variables['databrickstoken-appreg-srvcondevops-dev'] }}"
-             if [ -z "$(databrickstoken-appreg-srvcondevops-dev)" ]; then
-               echo "ERROR: Token from variable group is empty or not set!"
-               echo "Checking Key Vault access..."
-               az keyvault secret show --name databrickstoken-appreg-srvcondevops-dev --vault-name <YourKeyVaultName>
-               if [ $? -ne 0 ]; then
-                 echo "ERROR: Unable to access Key Vault or retrieve the secret!"
-                 exit 1
-               fi
-             fi
-           displayName: 'Debug Token Retrieval'
+        - task: PowerShell@2
+          inputs:
+            targetType: 'inline'
+            script: |
+                $result = $env:MY_MAPPED_TOKEN
+                Write-Host $result.value
+          env:
+            MY_MAPPED_TOKEN: $(databrickstoken-appreg-srvcondevops-dev) # Maps the secret variable $(token) from my-var-group
 
       # Deploy Notebooks
      - template: templates/dbrickscli.yml
