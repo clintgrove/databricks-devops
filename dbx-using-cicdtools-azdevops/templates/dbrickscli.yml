@@ -50,7 +50,6 @@ jobs:
 
         - script: |
             echo "Testing Databricks CLI authentication..."
-            databricks configure --token <<< "$DATABRICKS_HOST\n$DATABRICKS_TOKEN"
             databricks workspace ls
           displayName: 'Testing Databricks CLI module'
           env:
