@@ -89,8 +89,8 @@ jobs:
 
         - task: PowerShell@2
           displayName: "Validate Databricks CLI Configuration"
-          env:
-            DATABRICKS_CONFIG_FILE: "$env:USERPROFILE\\.databricks-config"
+          # env:
+          #   DATABRICKS_CONFIG_FILE: "$env:USERPROFILE\\.databricks-config"
           inputs:
             targetType: 'inline'
             script: |
@@ -104,10 +104,10 @@ jobs:
 
         - task: PowerShell@2
           displayName: "Upload Notebooks via Databricks CLI"
-          env:
-            DATABRICKS_CONFIG_FILE: "$env:USERPROFILE\\.databricks-config"
+          # env:
+          #   DATABRICKS_CONFIG_FILE: "$env:USERPROFILE\\.databricks-config"
           inputs:
             targetType: 'inline'
             script: |
               echo "Uploading notebooks to Databricks workspace..."
-              databricks workspace import-dir --overwrite "$(Build.Repository.LocalPath)/${{ parameters.notebooksPath }}" "/live"
+              databricks workspace import-dir --overwrite "$(Build.Repository.LocalPath)/${{ parameters.notebooksPath }}" "/live" -p DEFAULT
