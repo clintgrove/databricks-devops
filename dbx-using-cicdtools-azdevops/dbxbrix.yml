@@ -24,7 +24,10 @@ steps:
 - script: |
     python -m pip install --upgrade pip
     pip install databricks-cli
-    databricks configure --token
+    mkdir -p ~/.databricks
+    echo "[DEFAULT]" > ~/.databricks/config
+    echo "host = $(DATABRICKS_HOST)" >> ~/.databricks/config
+    echo "token = $(databrickstoken-appreg-srvcondevops-dev)" >> ~/.databricks/config
   displayName: 'Install and Configure Databricks CLI'
   env:
     DATABRICKS_HOST: $(DATABRICKS_HOST)
