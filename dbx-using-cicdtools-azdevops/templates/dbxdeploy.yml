@@ -58,10 +58,9 @@ jobs:
               $env:DATABRICKS_TOKEN = '${{ parameters.databricksToken }}'
               Set-Content -Path "$env:USERPROFILE\.databrickscfg" -Value "[DEFAULT]`nhost=$env:DATABRICKS_HOST`ntoken=$env:DATABRICKS_TOKEN"
               databricks configure --token --host $env:DATABRICKS_HOST --token $env:DATABRICKS_TOKEN
-              databricks workspace import-dir ${{ parameters.notebooksPath }} /live
               echo "Configured Databricks CLI"
           displayName: 'Configure Databricks CLI'
-          
+
         # # Deploy the notebooks
         # - script: |
         #     echo "Deploying notebooks to ${{ parameters.env }} environment"
