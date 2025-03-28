@@ -35,10 +35,15 @@ jobs:
             pip install databricks-cli
           displayName: 'Install Databricks CLI'
 
+
         - script: |
-            echo ${{ parameters.databricksHost }}
-            echo this is the token:  ${{ parameters.databricksToken }}
-          displayName: 'Print Databricks Host'
+            echo "Databricks Host: ${{ parameters.databricksHost }}"
+            echo "Databricks Token: ${{ parameters.databricksToken }}"
+            if [ -z "${{ parameters.databricksToken }}" ]; then
+              echo "ERROR: Databricks Token is empty or not set!"
+              exit 1
+            fi
+          displayName: 'Debug Databricks Token'
 
         - script: |
             mkdir -p ~/.databricks
