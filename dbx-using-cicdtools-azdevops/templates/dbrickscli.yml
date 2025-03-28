@@ -43,17 +43,19 @@ jobs:
             ${{ parameters.databricksClientId }}
             ${{ parameters.databricksClientSecret }}
             EOF
+            databricks workspace list /Users
           displayName: 'Configure Databricks CLI'
 
-        - task: AzureCLI@2
-          inputs:
-            azureSubscription: ${{ parameters.serviceConnection }}
-            useGlobalConfig: true
-            scriptType: bash
-            scriptLocation: inlineScript
-            inlineScript: |
-              export DATABRICKS_HOST= ${{ parameters.databricksHost }}
-              databricks workspace list /Users
+
+        # - task: AzureCLI@2
+        #   inputs:
+        #     azureSubscription: ${{ parameters.serviceConnection }}
+        #     useGlobalConfig: true
+        #     scriptType: bash
+        #     scriptLocation: inlineScript
+        #     inlineScript: |
+        #       export DATABRICKS_HOST= ${{ parameters.databricksHost }}
+        #       databricks workspace list /Users
 
 
         # - script: |
