@@ -37,44 +37,49 @@ jobs:
             pip install databricks-cli
           displayName: 'Install Databricks CLI'
 
-        - script: |
-            echo "Databricks Host: ${{ parameters.databricksHost }}"
-            echo "Databricks Client ID: ${{ parameters.databricksClientId }}"
-            echo "Databricks Client Secret: ${{ parameters.databricksClientSecret }}"
-            if [ -z "${{ parameters.databricksClientSecret }}" ]; then
-              echo "ERROR: Databricks Client Secret is empty or not set!"
-              exit 1
-            fi
-          displayName: 'Debug Databricks Credentials'
+        - task: AzureCLI@2
+          inputs:
+            azureSubscription: S{{ parameters.serviceConnection }}
+            useGlobalConfig: true
+            scriptType: bash
+            scriptLocation: inlineScript
+            inlineScript: |
+              export DATABRICKS_HOST= ${{ parameters.databricksHost }}
+              databricks workspace list /Users
 
-        - script: |
-            mkdir -p ~/.databricks
-            touch ~/.databrickscfg
-            echo "[DEFAULT]" > ~/.databrickscfg
-            echo "host = $DATABRICKS_HOST" >> ~/.databrickscfg
-            echo "client_id = $DATABRICKS_CLIENT_ID" >> ~/.databrickscfg
-            echo "client_secret = $DATABRICKS_CLIENT_SECRET" >> ~/.databrickscfg
-            echo "Databricks CLI configuration file content:"
-            cat ~/.databrickscfg
-          displayName: 'Configure Databricks CLI'
-          env:
-            DATABRICKS_HOST: ${{ parameters.databricksHost }}
-            DATABRICKS_CLIENT_ID: ${{ parameters.databricksClientId }}
-            DATABRICKS_CLIENT_SECRET: ${{ parameters.databricksClientSecret }}
 
-        - script: |
-            echo "Testing Databricks CLI authentication..."
-            DATABRICKS_CONFIG_FILE=~/.databrickscfg databricks workspace ls
-          displayName: 'Testing Databricks CLI module'
-          env:
-            DATABRICKS_HOST: ${{ parameters.databricksHost }}
-            DATABRICKS_CLIENT_ID: ${{ parameters.databricksClientId }}
-            DATABRICKS_CLIENT_SECRET: ${{ parameters.databricksClientSecret }}
+        # - script: |
+        #     echo "Testing Databricks CLI authentication..."
+        #     DATABRICKS_CONFIG_FILE=~/.databrickscfg databricks workspace ls
+        #   displayName: 'Testing Databricks CLI module'
+        #   env:
+        #     DATABRICKS_HOST: ${{ parameters.databricksHost }}
+        #     DATABRICKS_CLIENT_ID: ${{ parameters.databricksClientId }}
+        #     DATABRICKS_CLIENT_SECRET: ${{ parameters.databricksClientSecret }}
 
-        - script: |
-            databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live --overwrite
-          displayName: 'Deploy files to Databricks workspace'
-          env:
-            DATABRICKS_HOST: $(DATABRICKS_HOST)
-            DATABRICKS_CLIENT_ID: $(DATABRICKS_CLIENT_ID)
-            DATABRICKS_CLIENT_SECRET: $(DATABRICKS_CLIENT_SECRET)
+        # - script: |
+        #     databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live --overwrite
+        #   displayName: 'Deploy files to Databricks workspace'
+        #   env:
+        #     DATABRICKS_HOST: $(DATABRICKS_HOST)
+        #     DATABRICKS_CLIENT_ID: $(DATABRICKS_CLIENT_ID)
+        #     DATABRICKS_CLIENT_SECRET: $(DATABRICKS_CLIENT_SECRET)
+
+
+
+
+
+        # - script: |
+        #     mkdir -p ~/.databricks
+        #     touch ~/.databrickscfg
+        #     echo "[DEFAULT]" > ~/.databrickscfg
+        #     echo "host = $DATABRICKS_HOST" >> ~/.databrickscfg
+        #     echo "client_id = $DATABRICKS_CLIENT_ID" >> ~/.databrickscfg
+        #     echo "client_secret = $DATABRICKS_CLIENT_SECRET" >> ~/.databrickscfg
+        #     echo "Databricks CLI configuration file content:"
+        #     cat ~/.databrickscfg
+        #   displayName: 'Configure Databricks CLI'
+        #   env:
+        #     DATABRICKS_HOST: ${{ parameters.databricksHost }}
+        #     DATABRICKS_CLIENT_ID: ${{ parameters.databricksClientId }}
+        #     DATABRICKS_CLIENT_SECRET: ${{ parameters.databricksClientSecret }}
