@@ -11,6 +11,10 @@ parameters:
     displayName: 'Path to Notebooks'
     type: string
     default: "dbx-using-cicdtools-azdevops/notebooks"
+  - name: serviceConnection
+    displayName: 'Azure Service Connection'
+    type: string
+    default: 'bloom-connect-vse'
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -28,7 +32,7 @@ steps:
 
 - task: AzureCLI@2
   inputs:
-    azureSubscription: {{ parameters.serviceConnection }}
+    azureSubscription: ${{ parameters.serviceConnection }}
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
