@@ -48,8 +48,8 @@ jobs:
         #   displayName: 'Install Databricks CLI'
 
         - script: |
-            export DATABRICKS_HOST=${{ parameters.databricksHost }}
-            export DATABRICKS_TOKEN=${{ parameters.databricksToken }}
+            set DATABRICKS_HOST=${{ parameters.databricksHost }}
+            set DATABRICKS_TOKEN=${{ parameters.databricksToken }}
             databricks configure --token
           displayName: 'Configure Databricks CLI'
 
@@ -61,7 +61,8 @@ jobs:
             databricks workspace import_dir \
               --overwrite \
               ${{ parameters.notebooksPath }} \
-              /live
+              /live \
+              -p DEFAULT
 
             echo "Deployment complete."
           displayName: 'Deploy Databricks Notebooks'
