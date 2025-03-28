@@ -36,7 +36,7 @@ steps:
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
-      export CLIENT_ID="557fa95a-5c11-4b0c-987a-d38b6633b07b"
+      export CLIENT_ID=$DATABRICKS_CLIENT_ID
       export CLIENT_SECRET=$DATABRICKS_CLIENT_SECRET
 
       response=$(curl --silent --request POST \
