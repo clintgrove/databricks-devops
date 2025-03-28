@@ -42,10 +42,10 @@ jobs:
         #       az config set extension.dynamic_install_allow_preview=true
         #   displayName: 'Configure Azure CLI'
 
-        # - script: |
-        #     python -m pip install --upgrade pip
-        #     pip install databricks-cli
-        #   displayName: 'Install Databricks CLI'
+        - script: |
+            python -m pip install --upgrade pip
+            pip install --upgrade databricks-cli
+          displayName: 'Upgrade Databricks CLI'
 
         # Use Azure CLI to configure Databricks CLI
         - task: AzureCLI@2
@@ -66,7 +66,7 @@ jobs:
             echo "Using resource group: ${{ parameters.resourceGroupName }}"
             echo "Notebooks path: ${{ parameters.notebooksPath }}"
 
-            databricks workspace import_dir --overwrite ${{ parameters.notebooksPath }} /live
+            databricks workspace import_dir ${{ parameters.notebooksPath }} /live
 
             echo "Deployment complete."
           displayName: 'Deploy Databricks Notebooks'
