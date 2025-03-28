@@ -38,13 +38,11 @@ jobs:
           displayName: 'Install Databricks CLI'
 
         - script: |
-            databricks configure --token <<EOF
-            ${{ parameters.databricksHost }}  
-            ${{ parameters.databricksClientId }}
-            ${{ parameters.databricksClientSecret }}
-            EOF
-            databricks workspace list /Users
-          displayName: 'Configure Databricks CLI'
+            export DATABRICKS_HOST=$(databricksHost)
+            export DATABRICKS_CLIENT_ID=$(databricksClientId)
+            export DATABRICKS_CLIENT_SECRET=$(databricksClientSecret)
+            databricks workspace ls
+          displayName: 'Configure Databricks CLI with Client Credentials'
 
 
         # - task: AzureCLI@2
