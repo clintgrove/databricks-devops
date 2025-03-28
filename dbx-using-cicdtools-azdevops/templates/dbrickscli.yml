@@ -37,6 +37,14 @@ jobs:
             pip install databricks-cli
           displayName: 'Install Databricks CLI'
 
+        - script: |
+            databricks configure --token <<EOF
+            ${{ parameters.databricksHost }}  
+            ${{ parameters.databricksClientId }}
+            ${{ parameters.databricksClientSecret }}
+            EOF
+          displayName: 'Configure Databricks CLI'
+
         - task: AzureCLI@2
           inputs:
             azureSubscription: ${{ parameters.serviceConnection }}
