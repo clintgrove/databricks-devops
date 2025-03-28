@@ -83,6 +83,7 @@ jobs:
               } else {
                   Write-Error "Failed to create Databricks CLI configuration file."
                   exit 1
+              }
 
         - task: PowerShell@2
           displayName: "Validate Databricks CLI Configuration"
