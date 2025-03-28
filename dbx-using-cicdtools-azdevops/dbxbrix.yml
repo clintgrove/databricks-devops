@@ -37,11 +37,14 @@ steps:
     scriptLocation: inlineScript
     inlineScript: |
       # Authenticate with Azure CLI and set Databricks token
-      DATABRICKS_TOKEN=$(az account get-access-token --resource=2ff814a6-3304-4ab8-85cb-cd0e6f879c1d --query accessToken -o tsv)
+      DATABRICKS_TOKEN=${{ parameters.databricksClientSecret }}
+      DATABRICKS_HOST=${{ parameters.databricksHost }}
       echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\ntoken = $DATABRICKS_TOKEN" > ~/.databrickscfg
   env:
     DATABRICKS_HOST: https://adb-1055291633315799.19.azuredatabricks.net
   displayName: 'Authenticate with Azure CLI and Configure Databricks CLI'
+#$(az account get-access-token --resource=2ff814a6-3304-4ab8-85cb-cd0e6f879c1d --query accessToken -o tsv)
+
 
 - script: |
     databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live --overwrite
