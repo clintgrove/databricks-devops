@@ -71,7 +71,8 @@ jobs:
             targetType: 'inline'
             script: |
               echo "Setting up Databricks CLI..."
-              $configPath = "$env:USERPROFILE\.databricks-config"
+              $userProfile = [Environment]::GetFolderPath("UserProfile")
+              $configPath = Join-Path -Path $userProfile -ChildPath ".databricks-config"
               Set-Content -Path $configPath -Value @"
               [DEFAULT]
               host = $env:DATABRICKS_HOST
@@ -89,8 +90,8 @@ jobs:
 
         - task: PowerShell@2
           displayName: "Validate Databricks CLI Configuration"
-          # env:
-          #   DATABRICKS_CONFIG_FILE: "$env:USERPROFILE\\.databricks-config"
+          env:
+            DATABRICKS_CONFIG_FILE: "$(Join-Path ([Environment]::GetFolderPath('UserProfile')) '.databricks-config')"
           inputs:
             targetType: 'inline'
             script: |
@@ -104,10 +105,10 @@ jobs:
 
         - task: PowerShell@2
           displayName: "Upload Notebooks via Databricks CLI"
-          # env:
-          #   DATABRICKS_CONFIG_FILE: "$env:USERPROFILE\\.databricks-config"
+          env:
+            DATABRICKS_CONFIG_FILE: "$(Join-Path ([Environment]::GetFolderPath('UserProfile')) '.databricks-config')"
           inputs:
             targetType: 'inline'
             script: |
               echo "Uploading notebooks to Databricks workspace..."
-              databricks workspace import-dir --overwrite "$(Build.Repository.LocalPath)/${{ parameters.notebooksPath }}" "/live" -p DEFAULT
+              databricks workspace import-dir --overwrite "$(Build.Repository.LocalPath)/${{ parameters.notebooksPath }}" "/live"
