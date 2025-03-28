@@ -1,0 +1,35 @@
+trigger:
+- cgpersonal
+
+variables:
+  - name: DATABRICKS_HOST
+    value: 'https://adb-1055291633315799.19.azuredatabricks.net' # Replace with your Databricks instance URL
+  - group: Dev-vars
+
+parameters:
+  - name: notebooksPath
+    displayName: 'Path to Notebooks'
+    type: string
+    default: "dbx-using-cicdtools-azdevops/notebooks"
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.x'
+    addToPath: true
+
+- script: |
+    python -m pip install --upgrade pip
+    pip install databricks-cli
+    databricks configure --token
+  displayName: 'Install and Configure Databricks CLI'
+  env:
+    DATABRICKS_HOST: $(DATABRICKS_HOST)
+    DATABRICKS_TOKEN: $(databrickstoken-appreg-srvcondevops-dev)
+
+- script: |
+    databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live --overwrite
+  displayName: 'Run Databricks Import Command'
