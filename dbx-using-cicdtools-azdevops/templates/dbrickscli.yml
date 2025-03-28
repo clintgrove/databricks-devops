@@ -15,6 +15,7 @@ parameters:
   type: string  
 - name: databricksToken
   type: string  
+  secure: true
 
 jobs:
 - deployment: ${{ parameters.stageId }}
@@ -37,7 +38,7 @@ jobs:
 
         - script: |
             echo ${{ parameters.databricksHost }}
-            echo ${{ parameters.databricksToken }}
+            echo this is the token:  ${{ parameters.databricksToken }}
           displayName: 'Print Databricks Host'
 
         - script: |
