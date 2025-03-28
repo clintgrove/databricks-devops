@@ -47,25 +47,26 @@ jobs:
         #     pip install databricks-cli
         #   displayName: 'Install Databricks CLI'
 
-        - task: PowerShell@2
+        # Use Azure CLI to configure Databricks CLI
+        - task: AzureCLI@2
           inputs:
-            targetType: 'inline'
-            script: |
+            azureSubscription: ${{ parameters.serviceConnection }}
+            scriptType: ps
+            scriptLocation: inlineScript
+            inlineScript: |
               $env:DATABRICKS_HOST = '${{ parameters.databricksHost }}'
               $env:DATABRICKS_TOKEN = '${{ parameters.databricksToken }}'
-              databricks configure --token
+              Set-Content -Path "$env:USERPROFILE\.databrickscfg" -Value "[DEFAULT]`nhost=$env:DATABRICKS_HOST`ntoken=$env:DATABRICKS_TOKEN"
+              echo "Configured Databricks CLI"
           displayName: 'Configure Databricks CLI'
 
+        # Deploy the notebooks
         - script: |
             echo "Deploying notebooks to ${{ parameters.env }} environment"
             echo "Using resource group: ${{ parameters.resourceGroupName }}"
             echo "Notebooks path: ${{ parameters.notebooksPath }}"
 
-            databricks workspace import_dir \
-              --overwrite \
-              ${{ parameters.notebooksPath }} \
-              /live \
-              -p DEFAULT
+            databricks workspace import_dir --overwrite ${{ parameters.notebooksPath }} /live
 
             echo "Deployment complete."
           displayName: 'Deploy Databricks Notebooks'
