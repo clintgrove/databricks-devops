@@ -1,9 +1,6 @@
 parameters:
 - name: stageId
   type: string
-- name: dependson
-  type: object
-  default: []
 - name: env
   type: string
 - name: environmentName
@@ -40,13 +37,16 @@ jobs:
 
         - script: |
             databricks configure --token <<EOF
-            $(DATABRICKS_HOST)
-            $(DATABRICKS_TOKEN)
+            $DATABRICKS_HOST
+            $DATABRICKS_TOKEN
             EOF
           displayName: 'Configure Databricks CLI'
+          env:
+            DATABRICKS_HOST: ${{ parameters.databricksHost }}
+            DATABRICKS_TOKEN: ${{ parameters.databricksToken }}
 
         - script: |
-            databricks workspace import_dir ./local_workspace /Workspace/TargetPath --overwrite
+            databricks workspace import_dir ${{ parameters.notebooksPath }} /Workspace/TargetPath --overwrite
           displayName: 'Deploy files to Databricks workspace'
           env:
             DATABRICKS_HOST: $(DATABRICKS_HOST)
