@@ -48,6 +48,7 @@ steps:
       DATABRICKS_HOST=$(DATABRICKS_HOST)
       echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\ntoken = $DATABRICKS_TOKEN" > ~/.databrickscfg
       databricks workspace ls
+      databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live --overwrite
   env:
     DATABRICKS_HOST: https://adb-1055291633315799.19.azuredatabricks.net
     DATABRICKS_CLIENT_SECRET: $(databrickstoken-appreg-srvcondevops-dev) # Reference the secret from the variable group
@@ -56,10 +57,10 @@ steps:
 #$(az account get-access-token --resource=2ff814a6-3304-4ab8-85cb-cd0e6f879c1d --query accessToken -o tsv)
 
 
-- script: |
-    databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live --overwrite
-  env:
-    DATABRICKS_HOST: https://adb-1055291633315799.19.azuredatabricks.net
-    DATABRICKS_CLIENT_SECRET: $(databrickstoken-appreg-srvcondevops-dev) # Reference the secret from the variable group
-    DATABRICKS_CLIENT_ID: 557fa95a-5c11-4b0c-987a-d38b6633b07b
-  displayName: 'Upload Notebooks to Databricks Workspace'
+# - script: |
+#     databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live --overwrite
+#   env:
+#     DATABRICKS_HOST: https://adb-1055291633315799.19.azuredatabricks.net
+#     DATABRICKS_CLIENT_SECRET: $(databrickstoken-appreg-srvcondevops-dev) # Reference the secret from the variable group
+#     DATABRICKS_CLIENT_ID: 557fa95a-5c11-4b0c-987a-d38b6633b07b
+#   displayName: 'Upload Notebooks to Databricks Workspace'
