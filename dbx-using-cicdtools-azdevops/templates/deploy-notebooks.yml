@@ -80,6 +80,8 @@ jobs:
               
               if (Test-Path $configPath) {
                   Write-Host "Databricks CLI configuration file created successfully."
+                  $env:DATABRICKS_CONFIG_FILE = $configPath
+                  Write-Host "DATABRICKS_CONFIG_FILE environment variable set to $configPath"
               } else {
                   Write-Error "Failed to create Databricks CLI configuration file."
                   exit 1
@@ -87,6 +89,8 @@ jobs:
 
         - task: PowerShell@2
           displayName: "Validate Databricks CLI Configuration"
+          env:
+            DATABRICKS_CONFIG_FILE: "$env:USERPROFILE\.databricks-config"
           inputs:
             targetType: 'inline'
             script: |
@@ -100,6 +104,8 @@ jobs:
 
         - task: PowerShell@2
           displayName: "Upload Notebooks via Databricks CLI"
+          env:
+            DATABRICKS_CONFIG_FILE: "$env:USERPROFILE\.databricks-config"
           inputs:
             targetType: 'inline'
             script: |
