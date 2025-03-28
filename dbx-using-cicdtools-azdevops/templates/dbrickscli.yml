@@ -41,14 +41,18 @@ jobs:
             echo "[DEFAULT]" > ~/.databrickscfg
             echo "host = $DATABRICKS_HOST" >> ~/.databrickscfg
             echo "token = $DATABRICKS_TOKEN" >> ~/.databrickscfg
+            echo "Databricks CLI configuration file content:"
+            cat ~/.databrickscfg
           displayName: 'Configure Databricks CLI'
           env:
             DATABRICKS_HOST: ${{ parameters.databricksHost }}
             DATABRICKS_TOKEN: ${{ parameters.databricksToken }}
 
         - script: |
+            echo "Testing Databricks CLI authentication..."
+            databricks configure --token <<< "$DATABRICKS_HOST\n$DATABRICKS_TOKEN"
             databricks workspace ls
-          displayName: 'testing databricks-cli module'
+          displayName: 'Testing Databricks CLI module'
           env:
             DATABRICKS_HOST: ${{ parameters.databricksHost }}
             DATABRICKS_TOKEN: ${{ parameters.databricksToken }}
