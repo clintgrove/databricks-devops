@@ -28,7 +28,7 @@ steps:
 
 - task: AzureCLI@2
   inputs:
-    azureSubscription: '<Your Azure DevOps Service Connection>'
+    azureSubscription: {{ parameters.serviceConnection }}
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
