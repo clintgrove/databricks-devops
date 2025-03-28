@@ -24,9 +24,12 @@ steps:
 - script: |
     python -m pip install --upgrade pip
     pip install databricks-cli
+    # Explicitly install the older CLI version if needed
+    # pip install databricks-cli==0.17.6
+  displayName: 'Install Databricks CLI'
 
 - script: |
-    databricks configure --host $DATABRICKS_HOST --token $DATABRICKS_CLIENT_SECRET
+    echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\ntoken = $DATABRICKS_CLIENT_SECRET" > ~/.databrickscfg
   env:
     DATABRICKS_HOST: https://adb-1055291633315799.19.azuredatabricks.net
     DATABRICKS_CLIENT_SECRET: $(databrickstoken-appreg-srvcondevops-dev)
