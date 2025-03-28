@@ -43,15 +43,19 @@ jobs:
           condition: failed() # Run only if the previous step fails
 
         - script: |
-            python -m pip install --upgrade pip
-            pip install databricks-cli
-          displayName: 'Install databricks-cli'
+            if ! command -v databricks &> /dev/null; then
+              echo "databricks-cli not found. Installing..."
+              python -m pip install --upgrade pip
+              pip install databricks-cli
+            else
+              echo "databricks-cli is already installed. Upgrading..."
+              # python -m pip install --upgrade pip
+              # pip install --upgrade databricks-cli
+              
+          displayName: 'Check and Install/Upgrade databricks-cli'
 
         - script: |
-            databricks configure --token <<EOF
-            ${ parameters.databricksHost }
-            ${ parameters.databricksToken }
-            EOF
+            databricks configure --host "${{ parameters.databricksHost }}" --token "${{ parameters.databricksToken }}"
           displayName: 'Configure databricks-cli'
 
         - script: |
