@@ -47,6 +47,16 @@ jobs:
             pip install --upgrade databricks-cli
           displayName: 'Upgrade Databricks CLI'
 
+        - task: AzureCLI@2
+          inputs:
+            azureSubscription: ${{ parameters.serviceConnection }}
+            scriptType: bash
+            scriptLocation: inlineScript
+            inlineScript: |
+              databricks workspace import-dir ${{ parameters.notebooksPath }} /live
+          displayName: 'wspace already'
+
+
         # Use Azure CLI to configure Databricks CLI
         - task: AzureCLI@2
           inputs:
