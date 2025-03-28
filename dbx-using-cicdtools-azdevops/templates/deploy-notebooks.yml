@@ -84,4 +84,4 @@ jobs:
           inputs:
             targetType: 'inline'
             script: |
-              databricks workspace import_dir "$(Build.Repository.LocalPath)/${{ parameters.notebooksPath }}" "/live" --overwrite
+              databricks workspace import_dir --overwrite "$(Build.Repository.LocalPath)/${{ parameters.notebooksPath }}" "/live"
