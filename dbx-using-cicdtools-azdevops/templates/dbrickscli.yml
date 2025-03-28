@@ -64,7 +64,7 @@ jobs:
 
         - script: |
             echo "Testing Databricks CLI authentication..."
-            databricks workspace ls
+            DATABRICKS_CONFIG_FILE=~/.databrickscfg databricks workspace ls
           displayName: 'Testing Databricks CLI module'
           env:
             DATABRICKS_HOST: ${{ parameters.databricksHost }}
