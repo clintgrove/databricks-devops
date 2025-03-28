@@ -37,6 +37,15 @@ stages:
          databricksHost: ${{ variables['dev-databricks-host'] }}
          databricksToken: ${{ variables['databrickstoken-appreg-srvcondevops-dev'] }}
 
+     - script: |
+         echo "Debugging token retrieval..."
+         echo "Databricks Token from variable group: ${{ variables['databrickstoken-appreg-srvcondevops-dev'] }}"
+         if [ -z "${{ variables['databrickstoken-appreg-srvcondevops-dev'] }}" ]; then
+           echo "ERROR: Token from variable group is empty or not set!"
+           exit 1
+         fi
+       displayName: 'Debug Token Retrieval'
+
 #  - stage: DoingProd
 #    dependsOn: DoingDev  # Ensures PROD runs only after DEV succeeds
 #    variables:
