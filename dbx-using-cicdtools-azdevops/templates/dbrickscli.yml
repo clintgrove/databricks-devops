@@ -38,7 +38,7 @@ jobs:
           displayName: 'Install Databricks CLI'
 
         - script: |
-            export DATABRICKS_HOST=${{ parameters.databricksHos }}
+            export DATABRICKS_HOST=${{ parameters.databricksHost }}
             export DATABRICKS_CLIENT_ID=${{ parameters.databricksClientId }}
             export DATABRICKS_CLIENT_SECRET=${{ parameters.databricksClientSecret }}
             databricks workspace ls
