@@ -50,7 +50,7 @@ steps:
       databricks workspace ls
   env:
     DATABRICKS_HOST: https://adb-1055291633315799.19.azuredatabricks.net
-    DATABRICKS_CLIENT_SECRET: $(databricksClientSecret) # Reference the secret from the variable group
+    DATABRICKS_CLIENT_SECRET: $(databrickspatmetokenbloomit) # Reference the secret from the variable group
   displayName: 'Authenticate with Azure CLI and Configure Databricks CLI'
 #$(az account get-access-token --resource=2ff814a6-3304-4ab8-85cb-cd0e6f879c1d --query accessToken -o tsv)
 
