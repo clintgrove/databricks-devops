@@ -29,7 +29,18 @@ jobs:
         steps:
         - task: UsePythonVersion@0
           inputs:
-            versionSpec: '3.x' # Ensure Python 3 is available for databricks-cli
+            versionSpec: '3.9' # Explicitly specify Python 3.9
+            addToPath: true
+            # token: $(GitHubToken) # Use GitHub token for authenticated downloads
+          continueOnError: true # Allow the pipeline to continue if this step fails
+
+        - script: |
+            if ! python --version; then
+              echo "Python not found. Installing Python manually..."
+              curl -sSL https://bootstrap.pypa.io/get-pip.py | python
+            fi
+          displayName: 'Verify or Install Python'
+          condition: failed() # Run only if the previous step fails
 
         - script: |
             python -m pip install --upgrade pip
@@ -40,7 +51,6 @@ jobs:
             databricks configure --token <<EOF
             ${ parameters.databricksHost }
             ${ parameters.databricksToken }
-            ffsd978432hlkj
             EOF
           displayName: 'Configure databricks-cli'
 
