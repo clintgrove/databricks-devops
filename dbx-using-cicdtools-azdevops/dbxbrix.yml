@@ -24,21 +24,21 @@ steps:
 - script: |
     python -m pip install --upgrade pip
     pip install databricks-cli
-    # Explicitly install the older CLI version if needed
-    # pip install databricks-cli==0.17.6
   displayName: 'Install Databricks CLI'
 
-- script: |
-    echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\ntoken = $DATABRICKS_CLIENT_SECRET" > ~/.databrickscfg
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: '<Your Azure DevOps Service Connection>'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      # Authenticate with Azure CLI and set Databricks token
+      DATABRICKS_TOKEN=$(az account get-access-token --resource=https://databricks.azure.com --query accessToken -o tsv)
+      echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\ntoken = $DATABRICKS_TOKEN" > ~/.databrickscfg
   env:
     DATABRICKS_HOST: https://adb-1055291633315799.19.azuredatabricks.net
-    DATABRICKS_CLIENT_SECRET: $(databrickstoken-appreg-srvcondevops-dev)
-  displayName: 'Configure Databricks CLI'
+  displayName: 'Authenticate with Azure CLI and Configure Databricks CLI'
 
 - script: |
     databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live --overwrite
-  env:
-    DATABRICKS_HOST: https://adb-1055291633315799.19.azuredatabricks.net
-    DATABRICKS_CLIENT_ID: 557fa95a-5c11-4b0c-987a-d38b6633b07b
-    DATABRICKS_CLIENT_SECRET: $(databrickstoken-appreg-srvcondevops-dev)
   displayName: 'Upload Notebooks to Databricks Workspace'
