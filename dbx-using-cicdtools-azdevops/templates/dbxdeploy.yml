@@ -47,10 +47,13 @@ jobs:
         #     pip install databricks-cli
         #   displayName: 'Install Databricks CLI'
 
-        - script: |
-            set DATABRICKS_HOST=${{ parameters.databricksHost }}
-            set DATABRICKS_TOKEN=${{ parameters.databricksToken }}
-            databricks configure --token
+        - task: PowerShell@2
+          inputs:
+            targetType: 'inline'
+            script: |
+              $env:DATABRICKS_HOST = '${{ parameters.databricksHost }}'
+              $env:DATABRICKS_TOKEN = '${{ parameters.databricksToken }}'
+              databricks configure --token
           displayName: 'Configure Databricks CLI'
 
         - script: |
