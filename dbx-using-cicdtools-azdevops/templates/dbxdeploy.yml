@@ -48,9 +48,8 @@ jobs:
         #   displayName: 'Install Databricks CLI'
 
         - script: |
-            echo "[DEFAULT]" > %USERPROFILE%\.databrickscfg
-            echo "host = ${{ parameters.databricksHost }}" >> %USERPROFILE%\.databrickscfg
-            echo "token = ${{ parameters.databricksToken }}" >> %USERPROFILE%\.databrickscfg
+            export DATABRICKS_HOST=${{ parameters.databricksHost }}
+            export DATABRICKS_TOKEN=${{ parameters.databricksToken }}
             databricks configure --token
           displayName: 'Configure Databricks CLI'
 
