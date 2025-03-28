@@ -50,7 +50,7 @@ jobs:
         - task: AzureCLI@2
           inputs:
             azureSubscription: ${{ parameters.serviceConnection }}
-            scriptType: bash
+            scriptType: ps
             scriptLocation: inlineScript
             inlineScript: |
               databricks workspace import-dir ${{ parameters.notebooksPath }} /live
