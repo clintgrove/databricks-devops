@@ -39,7 +39,7 @@ jobs:
 
         - task: AzureCLI@2
           inputs:
-            azureSubscription: S{{ parameters.serviceConnection }}
+            azureSubscription: ${{ parameters.serviceConnection }}
             useGlobalConfig: true
             scriptType: bash
             scriptLocation: inlineScript
