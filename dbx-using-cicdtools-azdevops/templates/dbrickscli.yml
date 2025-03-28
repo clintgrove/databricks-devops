@@ -36,10 +36,10 @@ jobs:
           displayName: 'Install Databricks CLI'
 
         - script: |
-            databricks configure --token <<EOF
-            $DATABRICKS_HOST
-            $DATABRICKS_TOKEN
-            EOF
+            mkdir -p ~/.databrickscfg
+            echo "[DEFAULT]" > ~/.databrickscfg
+            echo "host = $DATABRICKS_HOST" >> ~/.databrickscfg
+            echo "token = $DATABRICKS_TOKEN" >> ~/.databrickscfg
           displayName: 'Configure Databricks CLI'
           env:
             DATABRICKS_HOST: ${{ parameters.databricksHost }}
