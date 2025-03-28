@@ -10,13 +10,13 @@ variables:
   - name: notebooksPath
     value: "dbx-using-cicdtools-azdevops/notebooks"
 
-# pool:
-#   vmImage:  $(vmImageName) (this is if you are using a azurehosted agent)
-
 pool:
-  name: 'fiftysix-agents-devops' # Specify the agent pool name
-  demands:
-    - Agent.Name -equals vm-fiftysix0=-agent1 # Target the specific agent
+  vmImage:  $(vmImageName) (this is if you are using a azurehosted agent)
+
+# pool:
+#   name: 'fiftysix-agents-devops' # Specify the agent pool name
+#   demands:
+#     - Agent.Name -equals vm-fiftysix0=-agent1 # Target the specific agent
 
 stages:
  - stage: DoingDev

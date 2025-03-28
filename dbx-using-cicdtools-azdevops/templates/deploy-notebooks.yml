@@ -24,23 +24,23 @@ jobs:
       deploy:
         steps:
         # Install Azure CLI (this is for self-hosted agents)
-        - task: PowerShell@2
-          displayName: "Install Azure CLI"
-          inputs:
-            targetType: 'inline'
-            script: |
-              echo "Installing Azure CLI..."
-              Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi
-              Start-Process msiexec.exe -ArgumentList '/I AzureCLI.msi /quiet /norestart' -Wait
-              $env:Path += ";C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin"
+        # - task: PowerShell@2
+        #   displayName: "Install Azure CLI"
+        #   inputs:
+        #     targetType: 'inline'
+        #     script: |
+        #       echo "Installing Azure CLI..."
+        #       Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi
+        #       Start-Process msiexec.exe -ArgumentList '/I AzureCLI.msi /quiet /norestart' -Wait
+        #       $env:Path += ";C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin"
 
-        # Verify installations
-        - task: PowerShell@2
-          displayName: "Verify Azure CLI"
-          inputs:
-            targetType: 'inline'
-            script: |
-              az --version
+        # # Verify installations
+        # - task: PowerShell@2
+        #   displayName: "Verify Azure CLI"
+        #   inputs:
+        #     targetType: 'inline'
+        #     script: |
+        #       az --version
 
         - checkout: self
           displayName: "Checkout repository"
@@ -49,7 +49,7 @@ jobs:
           displayName: "GetToken Copy Notebooks"
           inputs:
             azureSubscription: ${{ parameters.serviceConnection }}
-            scriptType: powershell # Use Windows PowerShell
+            scriptType: pscore #powershell # Use Windows PowerShell
             scriptLocation: inlineScript
             inlineScript: |
               az config set extension.use_dynamic_install=yes_without_prompt
