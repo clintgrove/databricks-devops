@@ -36,7 +36,7 @@ jobs:
           displayName: 'Install Databricks CLI'
 
         - script: |
-            echo {{ parameters.databricksHost }}
+            echo ${{ parameters.databricksHost }}
           displayName: 'Print Databricks Host'
 
         - script: |
