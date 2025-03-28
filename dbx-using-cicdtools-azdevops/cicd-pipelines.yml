@@ -38,7 +38,7 @@ stages:
          notebooksPath: $(notebooksPath)
          databricksHost: ${{ variables['dev-databricks-host'] }}
          databricksClientId: $(databricksClientId-appreg-srvcondevops-dev)
-         databricksClientSecret: $(databricksClientSecret-appreg-srvcondevops-dev)
+         databricksClientSecret: $(databrickstoken-appreg-srvcondevops-dev)
 
 #  - stage: DoingProd
 #    dependsOn: DoingDev  # Ensures PROD runs only after DEV succeeds
