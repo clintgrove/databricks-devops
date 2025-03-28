@@ -60,9 +60,24 @@ jobs:
               } else {
                   Write-Host "Databricks CLI is already installed."
               }
-              $databricksHost = "${{ parameters.databricksHost }}"
-              $databricksToken = "${{ parameters.databricksToken }}"
-              databricks configure --host $databricksHost --token $databricksToken
+
+
+        - task: PowerShell@2
+          displayName: "Configure Databricks CLI"
+          env:
+              DATABRICKS_HOST: {{ parameters.databricksHost }}
+              DATABRICKS_TOKEN: {{ parameters.databricksToken }}
+          inputs:
+            targetType: 'inline'
+            script: |
+              echo "Setting up Databricks CLI..."
+              Set-Content -Path "$env:USERPROFILE\.databricks-config" -Value @"
+              [DEFAULT]
+              host = $env:DATABRICKS_HOST
+              token = $env:DATABRICKS_TOKEN
+              "@
+              
+              echo "Databricks CLI configured successfully!"
 
         - task: PowerShell@2
           displayName: "Upload Notebooks via Databricks CLI"
