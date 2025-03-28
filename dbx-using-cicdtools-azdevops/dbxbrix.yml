@@ -48,7 +48,7 @@ steps:
       # DATABRICKS_TOKEN=$(echo $response | jq -r '.access_token')
       # DATABRICKS_HOST=$(DATABRICKS_HOST)
       # echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\ntoken = $DATABRICKS_TOKEN" > ~/.databrickscfg
-      echo -e "[<some-unique-configuration-profile-name>]\nhost = $DATABRICKS_HOST\nclient_id = $DATABRICKS_CLIENT_ID\nclient_secret = $DATABRICKS_CLIENT_SECRET" > ~/.databrickscfg
+      echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\nclient_id = $DATABRICKS_CLIENT_ID\nclient_secret = $DATABRICKS_CLIENT_SECRET" > ~/.databrickscfg
 
       databricks workspace ls
       # databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live --overwrite
