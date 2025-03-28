@@ -36,6 +36,10 @@ jobs:
           displayName: 'Install Databricks CLI'
 
         - script: |
+            echo {{ parameters.databricksHost }}
+          displayName: 'Print Databricks Host'
+
+        - script: |
             mkdir -p ~/.databricks
             touch ~/.databrickscfg
             echo "[DEFAULT]" > ~/.databrickscfg
