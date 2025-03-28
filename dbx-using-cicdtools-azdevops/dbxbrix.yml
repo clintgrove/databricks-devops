@@ -37,8 +37,7 @@ steps:
     scriptLocation: inlineScript
     inlineScript: |
       # Authenticate with Azure CLI and set Databricks token
-      TENANT_ID=$(az account show --query tenantId -o tsv)
-      DATABRICKS_TOKEN=$(az account get-access-token --resource=https://management.azure.com --query accessToken -o tsv)
+      DATABRICKS_TOKEN=$(az account get-access-token --resource=2ff814a6-3304-4ab8-85cb-cd0e6f879c1d --query accessToken -o tsv)
       echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\ntoken = $DATABRICKS_TOKEN" > ~/.databrickscfg
   env:
     DATABRICKS_HOST: https://adb-1055291633315799.19.azuredatabricks.net
