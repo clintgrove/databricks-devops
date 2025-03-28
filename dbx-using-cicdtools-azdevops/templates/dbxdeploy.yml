@@ -58,26 +58,21 @@ jobs:
               $env:DATABRICKS_TOKEN = '${{ parameters.databricksToken }}'
               Set-Content -Path "$env:USERPROFILE\.databrickscfg" -Value "[DEFAULT]`nhost=$env:DATABRICKS_HOST`ntoken=$env:DATABRICKS_TOKEN"
               databricks configure --token --host $env:DATABRICKS_HOST --token $env:DATABRICKS_TOKEN
-              if ($?) {
-                echo "Configured Databricks CLI successfully"
-              } else {
-                echo "Failed to configure Databricks CLI"
-                exit 1
-              }
-          displayName: 'Configure Databricks CLI'
+              databricks workspace import-dir ${{ parameters.notebooksPath }} /live
+          displayName: 'Configure Databricks CLI and run import-dir'
           continueOnError: true
 
-        # Deploy the notebooks
-        - script: |
-            echo "Deploying notebooks to ${{ parameters.env }} environment"
-            echo "Using resource group: ${{ parameters.resourceGroupName }}"
-            echo "Notebooks path: ${{ parameters.notebooksPath }}"
+        # # Deploy the notebooks
+        # - script: |
+        #     echo "Deploying notebooks to ${{ parameters.env }} environment"
+        #     echo "Using resource group: ${{ parameters.resourceGroupName }}"
+        #     echo "Notebooks path: ${{ parameters.notebooksPath }}"
 
-            databricks workspace import-dir ${{ parameters.notebooksPath }} /live
-            if ($?) {
-              echo "Deployment complete."
-            } else {
-              echo "Deployment failed."
-              exit 1
-            }
-          displayName: 'Deploy Databricks Notebooks'
+        #     databricks workspace import-dir ${{ parameters.notebooksPath }} /live
+        #     if ($?) {
+        #       echo "Deployment complete."
+        #     } else {
+        #       echo "Deployment failed."
+        #       exit 1
+        #     }
+        #   displayName: 'Deploy Databricks Notebooks'
