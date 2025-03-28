@@ -32,9 +32,14 @@ stages:
          - script: |
              echo "Debugging token retrieval..."
              echo "Databricks Token from variable group: ${{ variables['databrickstoken-appreg-srvcondevops-dev'] }}"
-             if [ -z "${{ variables['databrickstoken-appreg-srvcondevops-dev'] }}" ]; then
+             if [ -z "$(databrickstoken-appreg-srvcondevops-dev)" ]; then
                echo "ERROR: Token from variable group is empty or not set!"
-               exit 1
+               echo "Checking Key Vault access..."
+               az keyvault secret show --name databrickstoken-appreg-srvcondevops-dev --vault-name <YourKeyVaultName>
+               if [ $? -ne 0 ]; then
+                 echo "ERROR: Unable to access Key Vault or retrieve the secret!"
+                 exit 1
+               fi
              fi
            displayName: 'Debug Token Retrieval'
 
@@ -48,7 +53,7 @@ stages:
          serviceConnection: ${{ variables['dev-service-connection-name'] }}
          notebooksPath: $(notebooksPath)
          databricksHost: ${{ variables['dev-databricks-host'] }}
-         databricksToken: ${{ variables['databrickstoken-appreg-srvcondevops-dev'] }}
+         databricksToken: $(databrickstoken-appreg-srvcondevops-dev)
 
 #  - stage: DoingProd
 #    dependsOn: DoingDev  # Ensures PROD runs only after DEV succeeds
