@@ -71,17 +71,36 @@ jobs:
             targetType: 'inline'
             script: |
               echo "Setting up Databricks CLI..."
-              Set-Content -Path "$env:USERPROFILE\.databricks-config" -Value @"
+              $configPath = "$env:USERPROFILE\.databricks-config"
+              Set-Content -Path $configPath -Value @"
               [DEFAULT]
               host = $env:DATABRICKS_HOST
               token = $env:DATABRICKS_TOKEN
               "@
               
-              echo "Databricks CLI configured successfully!"
+              if (Test-Path $configPath) {
+                  Write-Host "Databricks CLI configuration file created successfully."
+              } else {
+                  Write-Error "Failed to create Databricks CLI configuration file."
+                  exit 1
+
+        - task: PowerShell@2
+          displayName: "Validate Databricks CLI Configuration"
+          inputs:
+            targetType: 'inline'
+            script: |
+              echo "Validating Databricks CLI configuration..."
+              databricks workspace ls /
+              if ($LASTEXITCODE -ne 0) {
+                  Write-Error "Databricks CLI validation failed. Please check the configuration."
+                  exit 1
+              }
+              echo "Databricks CLI validation successful."
 
         - task: PowerShell@2
           displayName: "Upload Notebooks via Databricks CLI"
           inputs:
             targetType: 'inline'
             script: |
+              echo "Uploading notebooks to Databricks workspace..."
               databricks workspace import-dir --overwrite "$(Build.Repository.LocalPath)/${{ parameters.notebooksPath }}" "/live"
