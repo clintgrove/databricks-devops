@@ -36,19 +36,21 @@ steps:
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
-      export CLIENT_ID="557fa95a-5c11-4b0c-987a-d38b6633b07b"
-      # Use CLIENT_SECRET directly from the variable group
-      export CLIENT_SECRET=$DATABRICKS_CLIENT_SECRET
+      export DATABRICKS_CLIENT_ID=$DATABRICKS_CLIENT_ID
+      export DATABRICKS_CLIENT_SECRET=$DATABRICKS_CLIENT_SECRET
+      export DATABRICKS_HOST=$DATABRICKS_HOST
 
-      response=$(curl --silent --request POST \
-      --url https://adb-1055291633315799.19.azuredatabricks.net//oidc/v1/token \
-      --user "$CLIENT_ID:$CLIENT_SECRET" \
-      --data 'grant_type=client_credentials&scope=all-apis')
-      DATABRICKS_TOKEN=$(echo $response | jq -r '.access_token')
-      DATABRICKS_HOST=$(DATABRICKS_HOST)
-      echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\ntoken = $DATABRICKS_TOKEN" > ~/.databrickscfg
 
-      databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live --overwrite
+      # response=$(curl --silent --request POST \
+      # --url https://adb-1055291633315799.19.azuredatabricks.net//oidc/v1/token \
+      # --user "$CLIENT_ID:$CLIENT_SECRET" \
+      # --data 'grant_type=client_credentials&scope=all-apis')
+      # DATABRICKS_TOKEN=$(echo $response | jq -r '.access_token')
+      # DATABRICKS_HOST=$(DATABRICKS_HOST)
+      # echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\ntoken = $DATABRICKS_TOKEN" > ~/.databrickscfg
+
+      databricks workspace ls
+      # databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live --overwrite
   env:
     DATABRICKS_HOST: https://adb-1055291633315799.19.azuredatabricks.net
     DATABRICKS_CLIENT_SECRET: $(databrickstoken-appreg-srvcondevops-dev) # Reference the secret from the variable group
