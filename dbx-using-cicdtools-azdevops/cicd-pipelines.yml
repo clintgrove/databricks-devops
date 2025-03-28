@@ -23,24 +23,24 @@ pool:
 stages:
  - stage: DoingDev
    variables:
-     - group: dev-vars
+      - group: Dev-vars
    jobs:
-       # Deploy Notebooks
-    - template: templates/dbrickscli.yml
-      parameters:
-        stageId: "Deploy_to_Dev_Environment"
-        env: "dev"
-        environmentName: ${{ variables['dev-environment-name'] }}
-        resourceGroupName: ${{ variables['dev-resource-group-name'] }}
-        serviceConnection: ${{ variables['dev-service-connection-name'] }}
-        notebooksPath: $(notebooksPath)
-        databricksHost: ${{ variables['dev-databricks-host'] }}
-        databricksToken: ${{ variables['dbxtoken'] }} # Ensure this variable is set in Azure DevOps Library variables (under "Pipeline"/"Library" tab)
+      # Deploy Notebooks
+     - template: templates/dbrickscli.yml
+       parameters:
+         stageId: "Deploy_to_Dev_Environment"
+         env: "dev"
+         environmentName: ${{ variables['dev-environment-name'] }}
+         resourceGroupName: ${{ variables['dev-resource-group-name'] }}
+         serviceConnection: ${{ variables['dev-service-connection-name'] }}
+         notebooksPath: $(notebooksPath)
+         databricksHost: ${{ variables['dev-databricks-host'] }}
+         databricksToken: ${{ variables['databrickstoken-appreg-srvcondevops-dev'] }} # Ensure this variable is set in Azure DevOps Library variables (under "Pipeline"/"Library" tab)
 
  - stage: DoingProd
    dependsOn: DoingDev  # Ensures PROD runs only after DEV succeeds
    variables:
-     - group: prod-vars
+     - group: Prod-vars
    jobs:
     - template: templates/dbrickscli.yml
       parameters:

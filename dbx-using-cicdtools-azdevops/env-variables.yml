@@ -1,10 +1,10 @@
 variables:
   dev-environment-name :  'dev'
-  dev-resource-group-name :  'analytics' #the resource group name in Azure where the Databricks workspace is located
-  dev-service-connection-name :  'clintazrealallrgs-fiftysix' #the service connection name in Azure DevOps that is used to connect to the Databricks workspace
-  dev-databricks-host: 'https://adb-387231224396630.10.azuredatabricks.net/' #the host name of the Databricks workspace in Azure
+  dev-resource-group-name :  'dbx-analytics-dev' #the resource group name in Azure where the Databricks workspace is located
+  dev-service-connection-name :  'bloom-connect-vse' #the service connection name in Azure DevOps that is used to connect to the Databricks workspace
+  dev-databricks-host: 'https://adb-1055291633315799.19.azuredatabricks.net' #the host name of the Databricks workspace in Azure
 
   prod-environment-name :  'prod'
-  prod-resource-group-name :  'analytics-prod' #the resource group name in Azure where the Databricks workspace is located
-  prod-service-connection-name :  'clintazrealallrgs-fiftysix' #the service connection name in Azure DevOps that is used to connect to the Databricks workspace
-  prod-databricks-host: 'https://adb-3808512876149223.3.azuredatabricks.net/' #the host name of the Databricks workspace in Azure
+  prod-resource-group-name :  'dbx-analytics-prod' #the resource group name in Azure where the Databricks workspace is located
+  prod-service-connection-name :  'bloom-connect-vse' #the service connection name in Azure DevOps that is used to connect to the Databricks workspace
+  prod-databricks-host: 'https://adb-2262937393579434.14.azuredatabricks.net' #the host name of the Databricks workspace in Azure
