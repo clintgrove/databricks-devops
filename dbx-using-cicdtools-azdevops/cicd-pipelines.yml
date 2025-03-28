@@ -1,22 +1,24 @@
 trigger:
     - main
     - addbasicdbxws
+    - cgpersonal
 
 variables:
   - template: .\env-variables.yml
-    
-  - name: vmImageName
-    value: "windows-latest"
   - name: notebooksPath
     value: "dbx-using-cicdtools-azdevops/notebooks"
 
 # pool:
-#   vmImage:  $(vmImageName) (this is if you are using a azurehosted agent)
+#   vmImage:  windows-latest" (this is if you are using a azurehosted agent)
+
 
 pool:
-  name: 'fiftysix-agents-devops' # Specify the agent pool name
-  demands:
-    - Agent.Name -equals vm-fiftysix0=-agent1 # Target the specific agent
+  vmImage: 'ubuntu-latest'
+
+# pool:
+#   name: 'fiftysix-agents-devops' # Specify the agent pool name
+#   demands:
+#     - Agent.Name -equals vm-fiftysix0=-agent1 # Target the specific agent
 
 stages:
  - stage: DoingDev
@@ -24,7 +26,7 @@ stages:
      - group: dev-vars
    jobs:
        # Deploy Notebooks
-    - template: templates/dbxdeploy.yml
+    - template: templates/dbrickscli.yml
       parameters:
         stageId: "Deploy_to_Dev_Environment"
         env: "dev"
@@ -40,7 +42,7 @@ stages:
    variables:
      - group: prod-vars
    jobs:
-    - template: templates/dbxdeploy.yml
+    - template: templates/dbrickscli.yml
       parameters:
         stageId: "Deploy_to_PROD_Environment"
         env: "prod"

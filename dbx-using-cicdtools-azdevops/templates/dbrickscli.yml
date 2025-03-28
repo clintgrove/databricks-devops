@@ -1,0 +1,53 @@
+parameters:
+- name: stageId
+  type: string
+- name: dependson
+  type: object
+  default: []
+- name: env
+  type: string
+- name: environmentName
+  type: string
+- name: resourceGroupName
+  type: string
+- name: serviceConnection
+  type: string
+- name: notebooksPath
+  type: string
+- name: databricksHost
+  type: string
+- name: databricksToken
+  type: string  
+
+jobs:
+- deployment: ${{ parameters.stageId }}
+  displayName: "Deploy Databricks Notebooks to ${{ parameters.env }}"
+  environment: ${{ parameters.environmentName }}
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+
+        - task: UsePythonVersion@0
+          inputs:
+            versionSpec: '3.x'
+            addToPath: true
+
+        - script: |
+            python -m pip install --upgrade pip
+            pip install databricks-cli
+          displayName: 'Install Databricks CLI'
+
+        - script: |
+            databricks configure --token <<EOF
+            $(DATABRICKS_HOST)
+            $(DATABRICKS_TOKEN)
+            EOF
+          displayName: 'Configure Databricks CLI'
+
+        - script: |
+            databricks workspace import_dir ./local_workspace /Workspace/TargetPath --overwrite
+          displayName: 'Deploy files to Databricks workspace'
+          env:
+            DATABRICKS_HOST: $(DATABRICKS_HOST)
+            DATABRICKS_TOKEN: $(DATABRICKS_TOKEN)
