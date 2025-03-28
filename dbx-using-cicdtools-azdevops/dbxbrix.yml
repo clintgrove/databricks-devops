@@ -36,9 +36,8 @@ steps:
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
-      # export CLIENT_ID="557fa95a-5c11-4b0c-987a-d38b6633b07b"
-      # # Use CLIENT_SECRET directly from the variable group
-      # export CLIENT_SECRET=$DATABRICKS_CLIENT_SECRET
+      export CLIENT_ID="557fa95a-5c11-4b0c-987a-d38b6633b07b"
+      export CLIENT_SECRET=$DATABRICKS_CLIENT_SECRET
 
       response=$(curl --silent --request POST \
       --url https://adb-1055291633315799.19.azuredatabricks.net//oidc/v1/token \
@@ -54,6 +53,8 @@ steps:
     DATABRICKS_CLIENT_ID: 557fa95a-5c11-4b0c-987a-d38b6633b07b
   displayName: 'Authenticate with Azure CLI and Configure Databricks CLI'
 
+
+#https://accounts.azuredatabricks.net/oidc/accounts/6f11c974-e6ce-45aa-9df3-cb8d50d74416/v1/token
 
 # - task: AzureCLI@2
 #   inputs:
