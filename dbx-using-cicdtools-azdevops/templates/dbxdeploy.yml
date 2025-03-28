@@ -20,46 +20,46 @@ parameters:
   type: string  
 
 jobs:
-- deployment: ${{ parameters.stageId }} # Parameterized job name for uniqueness
+- deployment: ${{ parameters.stageId }}
   displayName: "Deploy Databricks Notebooks to ${{ parameters.env }}"
   environment: ${{ parameters.environmentName }}
   strategy:
     runOnce:
       deploy:
         steps:
-        - task: UsePythonVersion@0
-          inputs:
-            versionSpec: '3.9' # Explicitly specify Python 3.9
-            addToPath: true
-            # token: $(GitHubToken) # Use GitHub token for authenticated downloads
-          continueOnError: true # Allow the pipeline to continue if this step fails
+        # - task: UsePythonVersion@0
+        #   inputs:
+        #     versionSpec: '3.9'
+        #     addToPath: true
+
+        # - task: AzureCLI@2
+        #   inputs:
+        #     azureSubscription: ${{ parameters.serviceConnection }}
+        #     scriptType: bash
+        #     scriptLocation: inlineScript
+        #     inlineScript: |
+        #       az config set extension.use_dynamic_install=yes_without_prompt
+        #       az config set extension.dynamic_install_allow_preview=true
+        #   displayName: 'Configure Azure CLI'
+
+        # - script: |
+        #     python -m pip install --upgrade pip
+        #     pip install databricks-cli
+        #   displayName: 'Install Databricks CLI'
 
         - script: |
-            if ! python --version; then
-              echo "Python not found. Installing Python manually..."
-              curl -sSL https://bootstrap.pypa.io/get-pip.py | python
-            fi
-          displayName: 'Verify or Install Python'
-          condition: failed() # Run only if the previous step fails
+            echo -e "${{ parameters.databricksHost }}\n${{ parameters.databricksToken }}" | databricks configure --token
+          displayName: 'Configure Databricks CLI'
 
         - script: |
-            if ! command -v databricks &> /dev/null; then
-              echo "databricks-cli not found. Installing..."
-              python -m pip install --upgrade pip
-              pip install databricks-cli
-            else
-              echo "databricks-cli is already installed. Upgrading..."
-              # python -m pip install --upgrade pip
-              # pip install --upgrade databricks-cli
-              
-          displayName: 'Check and Install/Upgrade databricks-cli'
+            echo "Deploying notebooks to ${{ parameters.env }} environment"
+            echo "Using resource group: ${{ parameters.resourceGroupName }}"
+            echo "Notebooks path: ${{ parameters.notebooksPath }}"
 
-        - script: |
-            databricks configure --host "${{ parameters.databricksHost }}" --token "${{ parameters.databricksToken }}"
-          displayName: 'Configure databricks-cli'
+            databricks workspace import_dir \
+              --overwrite \
+              ${{ parameters.notebooksPath }} \
+              /live
 
-        - script: |
-            databricks workspace mkdirs /notebooks
-            databricks workspace import_dir ../notebooks /notebooks --overwrite
-          displayName: 'Upload notebooks to Databricks workspace'
-          workingDirectory: $(System.DefaultWorkingDirectory)/templates
+            echo "Deployment complete."
+          displayName: 'Deploy Databricks Notebooks'
