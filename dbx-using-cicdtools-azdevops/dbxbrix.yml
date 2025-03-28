@@ -34,5 +34,10 @@ steps:
     DATABRICKS_TOKEN: $(databrickstoken-appreg-srvcondevops-dev)
 
 - script: |
+    export DATABRICKS_HOST=$(DATABRICKS_HOST)
+    export DATABRICKS_TOKEN=$(databrickstoken-appreg-srvcondevops-dev)
     databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live --overwrite
   displayName: 'Run Databricks Import Command'
+  env:
+    DATABRICKS_HOST: $(DATABRICKS_HOST)
+    DATABRICKS_TOKEN: $(databrickstoken-appreg-srvcondevops-dev)
