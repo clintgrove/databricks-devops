@@ -48,10 +48,10 @@ steps:
       DATABRICKS_HOST=$(DATABRICKS_HOST)
       echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\ntoken = $DATABRICKS_TOKEN" > ~/.databrickscfg
       databricks workspace ls
-  # env:
-  #   DATABRICKS_HOST: https://adb-1055291633315799.19.azuredatabricks.net
-  #   DATABRICKS_CLIENT_SECRET: $(databrickstoken-appreg-srvcondevops-dev) # Reference the secret from the variable group
-  #   DATABRICKS_CLIENT_ID: 557fa95a-5c11-4b0c-987a-d38b6633b07b
+  env:
+    DATABRICKS_HOST: https://adb-1055291633315799.19.azuredatabricks.net
+    DATABRICKS_CLIENT_SECRET: $(databrickstoken-appreg-srvcondevops-dev) # Reference the secret from the variable group
+    DATABRICKS_CLIENT_ID: 557fa95a-5c11-4b0c-987a-d38b6633b07b
   displayName: 'Authenticate with Azure CLI and Configure Databricks CLI'
 
 
