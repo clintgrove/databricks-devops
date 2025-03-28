@@ -1,0 +1,51 @@
+parameters:
+- name: stageId
+  type: string
+- name: dependson
+  type: object
+  default: []
+- name: env
+  type: string
+- name: environmentName
+  type: string
+- name: resourceGroupName
+  type: string
+- name: serviceConnection
+  type: string
+- name: notebooksPath
+  type: string
+- name: databricksHost
+  type: string
+- name: databricksToken
+  type: string  
+
+jobs:
+- deployment: ${{ parameters.stageId }} # Parameterized job name for uniqueness
+  displayName: "Deploy Databricks Notebooks to ${{ parameters.env }}"
+  environment: ${{ parameters.environmentName }}
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - task: UsePythonVersion@0
+          inputs:
+            versionSpec: '3.x' # Ensure Python 3 is available for databricks-cli
+
+        - script: |
+            python -m pip install --upgrade pip
+            pip install databricks-cli
+          displayName: 'Install databricks-cli'
+
+        - script: |
+            databricks configure --token <<EOF
+            ${ parameters.databricksHost }
+            ${ parameters.databricksToken }
+            ffsd978432hlkj
+            EOF
+          displayName: 'Configure databricks-cli'
+
+        - script: |
+            databricks workspace mkdirs /notebooks
+            databricks workspace import_dir ../notebooks /notebooks --overwrite
+          displayName: 'Upload notebooks to Databricks workspace'
+          workingDirectory: $(System.DefaultWorkingDirectory)/templates
