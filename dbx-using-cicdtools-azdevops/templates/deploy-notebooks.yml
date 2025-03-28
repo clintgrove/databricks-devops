@@ -14,6 +14,10 @@ parameters:
   type: string
 - name: notebooksPath
   type: string
+- name: databricksHost
+  type: string
+- name: databricksToken
+  type: string  
 
 jobs:
 - deployment: ${{ parameters.stageId }} # Parameterized job name for uniqueness
@@ -24,44 +28,43 @@ jobs:
       deploy:
         steps:
         # Install Azure CLI (this is for self-hosted agents)
-        # - task: PowerShell@2
-        #   displayName: "Install Azure CLI"
-        #   inputs:
-        #     targetType: 'inline'
-        #     script: |
-        #       echo "Installing Azure CLI..."
-        #       Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi
-        #       Start-Process msiexec.exe -ArgumentList '/I AzureCLI.msi /quiet /norestart' -Wait
-        #       $env:Path += ";C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin"
+        - task: PowerShell@2
+          displayName: "Install Azure CLI"
+          inputs:
+            targetType: 'inline'
+            script: |
+              echo "Installing Azure CLI..."
+              Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi
+              Start-Process msiexec.exe -ArgumentList '/I AzureCLI.msi /quiet /norestart' -Wait
+              $env:Path += ";C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin"
 
-        # # Verify installations
-        # - task: PowerShell@2
-        #   displayName: "Verify Azure CLI"
-        #   inputs:
-        #     targetType: 'inline'
-        #     script: |
-        #       az --version
+        # Verify installations
+        - task: PowerShell@2
+          displayName: "Verify Azure CLI"
+          inputs:
+            targetType: 'inline'
+            script: |
+              az --version
 
         - checkout: self
           displayName: "Checkout repository"
 
-        - task: AzureCLI@2
-          displayName: "GetToken Copy Notebooks"
+        - task: PowerShell@2
+          displayName: "Install Databricks CLI"
           inputs:
-            azureSubscription: ${{ parameters.serviceConnection }}
-            scriptType: pscore #powershell # Use Windows PowerShell
-            scriptLocation: inlineScript
-            inlineScript: |
-              az config set extension.use_dynamic_install=yes_without_prompt
-              az config set extension.dynamic_install_allow_preview=true
+            targetType: 'inline'
+            script: |
+              if (-Not (Get-Command databricks -ErrorAction SilentlyContinue)) {
+                  Write-Host "Databricks CLI not found. Installing..."
+                  pip install databricks-cli
+              } else {
+                  Write-Host "Databricks CLI is already installed."
+              }
+              databricks configure --host {{ parameters.databricksHost }} --token {{ parameters.databricksToken }}
 
-              $databricksWorkspace = (az resource list --resource-group ${{ parameters.resourceGroupName }} --query "[?type=='Microsoft.Databricks/workspaces'].id" --output tsv)
-
-              $databricksWorkspaceInfo = (az databricks workspace show --ids $databricksWorkspace --output json | ConvertFrom-Json)
-
-              $bearerToken = & "$(Build.Repository.LocalPath)/dbx-using-cicdtools-azdevops/scripts/DatabricksToken.ps1" -databricksworkspaceResourceId $databricksWorkspaceInfo.id -databricksWorkspaceUrl $databricksWorkspaceInfo.workspaceUrl
-
-              Install-Module -Name azure.databricks.cicd.tools -Force -Scope CurrentUser
-
-              Import-DatabricksFolder -BearerToken $bearerToken -Region $databricksWorkspaceInfo.location -LocalPath "$(Build.Repository.LocalPath)/${{ parameters.notebooksPath }}" -DatabricksPath "/live" -Clean
-              Import-Module -Name azure.databricks.cicd.tools
+        - task: PowerShell@2
+          displayName: "Upload Notebooks via Databricks CLI"
+          inputs:
+            targetType: 'inline'
+            script: |
+              databricks workspace import_dir "$(Build.Repository.LocalPath)/${{ parameters.notebooksPath }}" "/live" --overwrite

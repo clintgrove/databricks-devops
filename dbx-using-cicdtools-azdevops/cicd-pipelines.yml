@@ -10,16 +10,18 @@ variables:
   - name: notebooksPath
     value: "dbx-using-cicdtools-azdevops/notebooks"
 
-pool:
-  vmImage:  $(vmImageName) (this is if you are using a azurehosted agent)
-
 # pool:
-#   name: 'fiftysix-agents-devops' # Specify the agent pool name
-#   demands:
-#     - Agent.Name -equals vm-fiftysix0=-agent1 # Target the specific agent
+#   vmImage:  $(vmImageName) (this is if you are using a azurehosted agent)
+
+pool:
+  name: 'fiftysix-agents-devops' # Specify the agent pool name
+  demands:
+    - Agent.Name -equals vm-fiftysix0=-agent1 # Target the specific agent
 
 stages:
  - stage: DoingDev
+   variables:
+     - group: dev-vars
    jobs:
        # Deploy Notebooks
     - template: templates/deploy-notebooks.yml
@@ -30,9 +32,13 @@ stages:
         resourceGroupName: ${{ variables['dev-resource-group-name'] }}
         serviceConnection: ${{ variables['dev-service-connection-name'] }}
         notebooksPath: $(notebooksPath)
+        databricksHost: ${{ variables['dev-databricks-host'] }}
+        databricksToken: ${{ variables['dbxtoken'] }} # Ensure this variable is set in Azure DevOps Library variables (under "Pipeline"/"Library" tab)
 
  - stage: DoingProd
    dependsOn: DoingDev  # Ensures PROD runs only after DEV succeeds
+   variables:
+     - group: prod-vars
    jobs:
     - template: templates/deploy-notebooks.yml
       parameters:
@@ -42,3 +48,5 @@ stages:
         resourceGroupName: ${{ variables['prod-resource-group-name'] }}
         serviceConnection: ${{ variables['prod-service-connection-name'] }}
         notebooksPath: $(notebooksPath)
+        databricksHost: ${{ variables['prod-databricks-host'] }}
+        databricksToken: ${{ variables['dbxtoken'] }} # Ensure this variable is set in Azure DevOps Library variables (under "Pipeline"/"Library" tab)
