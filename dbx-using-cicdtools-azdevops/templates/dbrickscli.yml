@@ -53,7 +53,6 @@ jobs:
               --user "$DATABRICKS_CLIENT_ID:$DATABRICKS_CLIENT_SECRET" \
               --data 'grant_type=client_credentials&scope=all-apis')
               DATABRICKS_TOKEN=$(echo $response | jq -r '.access_token')
-              DATABRICKS_HOST=$(DATABRICKS_HOST)
               echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\ntoken = $DATABRICKS_TOKEN" > ~/.databrickscfg
               databricks workspace ls
           env:
