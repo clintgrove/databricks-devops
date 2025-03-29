@@ -44,13 +44,13 @@ steps:
       export DATABRICKS_CLIENT_ID=$DATABRICKS_CLIENT_ID
       export DATABRICKS_CLIENT_SECRET=$DATABRICKS_CLIENT_SECRET
 
-      # response=$(curl --silent --request POST \
-      # --url https://accounts.azuredatabricks.net/oidc/accounts/6f11c974-e6ce-45aa-9df3-cb8d50d74416/v1/token \
-      # --user "$CLIENT_ID:$CLIENT_SECRET" \
-      # --data 'grant_type=client_credentials&scope=all-apis')
-      # DATABRICKS_TOKEN=$(echo $response | jq -r '.access_token')
-      # DATABRICKS_HOST=$(DATABRICKS_HOST)
-      echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\naccount_id = $DATABRICKS_ACCOUNT_ID\nclient_id = $DATABRICKS_CLIENT_ID\nclient_secret = $DATABRICKS_CLIENT_SECRET" > ~/.databrickscfg
+      response=$(curl --silent --request POST \
+      --url https://accounts.azuredatabricks.net/oidc/accounts/6f11c974-e6ce-45aa-9df3-cb8d50d74416/v1/token \
+      --user "$CLIENT_ID:$CLIENT_SECRET" \
+      --data 'grant_type=client_credentials&scope=all-apis')
+      DATABRICKS_TOKEN=$(echo $response | jq -r '.access_token')
+      DATABRICKS_HOST=$(DATABRICKS_HOST)
+      echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\ntoken = $DATABRICKS_TOKEN" > ~/.databrickscfg
       
       databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live --overwrite
       
