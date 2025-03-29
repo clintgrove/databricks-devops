@@ -52,7 +52,7 @@ steps:
       DATABRICKS_HOST=$(DATABRICKS_HOST)
       echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\ntoken = $DATABRICKS_TOKEN" > ~/.databrickscfg
 
-      databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live --overwrite
+      #databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live --overwrite
       
   env:
     DATABRICKS_HOST: https://adb-1055291633315799.19.azuredatabricks.net
@@ -63,6 +63,8 @@ steps:
 
 - script: |
     databricks workspace ls
+    databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live2 --overwrite
+    
   env:
     DATABRICKS_HOST: https://adb-1055291633315799.19.azuredatabricks.net
     DATABRICKS_CLIENT_SECRET: $(databrickstoken-appreg-srvcondevops-dev) # Reference the secret from the variable group
