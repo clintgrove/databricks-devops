@@ -65,5 +65,5 @@ jobs:
 
         - script: |
             databricks workspace ls
-            databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live3 --overwrite
+            # databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live3 --overwrite
           displayName: 'Write out notebooks to Workspace'
