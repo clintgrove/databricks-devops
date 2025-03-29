@@ -54,7 +54,7 @@ jobs:
               --data 'grant_type=client_credentials&scope=all-apis')
               DATABRICKS_TOKEN=$(echo $response | jq -r '.access_token')
               echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\ntoken = $DATABRICKS_TOKEN" > ~/.databrickscfg
-              databricks workspace ls
+
           env:
             DATABRICKS_HOST: ${{ parameters.databricksHost }}
             DATABRICKS_CLIENT_SECRET: ${{ parameters.databricksClientSecret }}
@@ -64,4 +64,5 @@ jobs:
 
         - script: |
             databricks workspace ls
-          displayName: 'Write out notebooks to Workspace'
+            databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live4 --overwrite
+          displayName: 'Write notebooks to Workspace'
