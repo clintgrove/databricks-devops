@@ -36,6 +36,11 @@ jobs:
             pip install databricks-cli
           displayName: 'Install Databricks CLI'
 
+        - script: |
+            echo "Databricks Host: ${{ parameters.databricksHost }}"
+            echo "Databricks Client ID: ${{ parameters.databricksClientId }}"   
+            echo "Databricks Account ID: ${{ parameters.databricksAccountID }}"
+            echo "Databricks Client Secret: ${{ parameters.databricksClientSecret }}"
 
         - task: AzureCLI@2
           inputs:
