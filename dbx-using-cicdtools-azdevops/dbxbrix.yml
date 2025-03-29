@@ -63,10 +63,10 @@ steps:
     databricks workspace ls
     databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live2 --overwrite
 
-  env:
-    DATABRICKS_HOST: https://adb-1055291633315799.19.azuredatabricks.net
-    DATABRICKS_CLIENT_SECRET: $(databrickstoken-appreg-srvcondevops-dev) # Reference the secret from the variable group
-    DATABRICKS_CLIENT_ID: 557fa95a-5c11-4b0c-987a-d38b6633b07b
-    DATABRICKS_ACCOUNT_ID: 6f11c974-e6ce-45aa-9df3-cb8d50d74416
+  # env:
+  #   DATABRICKS_HOST: https://adb-1055291633315799.19.azuredatabricks.net
+  #   DATABRICKS_CLIENT_SECRET: $(databrickstoken-appreg-srvcondevops-dev) # Reference the secret from the variable group
+  #   DATABRICKS_CLIENT_ID: 557fa95a-5c11-4b0c-987a-d38b6633b07b
+  #   DATABRICKS_ACCOUNT_ID: 6f11c974-e6ce-45aa-9df3-cb8d50d74416
   displayName: 'Write out notebooks to Workspace'
 
