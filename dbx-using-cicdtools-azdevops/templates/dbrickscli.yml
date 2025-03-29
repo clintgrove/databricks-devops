@@ -5,8 +5,6 @@ parameters:
   type: string
 - name: environmentName
   type: string
-- name: resourceGroupName
-  type: string
 - name: serviceConnection
   type: string
 - name: notebooksPath
@@ -17,6 +15,8 @@ parameters:
   type: string
 - name: databricksClientSecret
   type: string
+- name: databricksAccountID
+  type: string  
 
 jobs:
 - deployment: ${{ parameters.stageId }}
@@ -26,7 +26,6 @@ jobs:
     runOnce:
       deploy:
         steps:
-
         - task: UsePythonVersion@0
           inputs:
             versionSpec: '3.x'
@@ -38,84 +37,33 @@ jobs:
           displayName: 'Install Databricks CLI'
 
 
-        - task: PowerShell@2
-          displayName: "Configure Databricks CLI"
-          env:
-            DATABRICKS_HOST: ${{ parameters.databricksHost }}
-            DATABRICKS_CLIENT_ID: ${{ parameters.databricksClientId }}
-            DATABRICKS_CLIENT_SECRET: ${{ parameters.databricksClientSecret }}
+        - task: AzureCLI@2
           inputs:
-            targetType: 'inline'
-            script: |
-              echo "Setting up Databricks CLI..."
-              $userProfile = [Environment]::GetFolderPath("UserProfile")
-              $configPath = Join-Path -Path $userProfile -ChildPath ".databricks-config"
-              Set-Content -Path $configPath -Value @"
-              [DEFAULT]
-              host = $env:DATABRICKS_HOST
-              token = $env:DATABRICKS_TOKEN
-              "@
+            azureSubscription: ${{ parameters.serviceConnection }}
+            scriptType: bash
+            scriptLocation: inlineScript
+            inlineScript: |
+              export DATABRICKS_HOST=$DATABRICKS_HOST
+              export DATABRICKS_ACCOUNT_ID=$DATABRICKS_ACCOUNT_ID
+              export DATABRICKS_CLIENT_ID=$DATABRICKS_CLIENT_ID
+              export DATABRICKS_CLIENT_SECRET=$DATABRICKS_CLIENT_SECRET
+
+              response=$(curl --silent --request POST \
+              --url https://accounts.azuredatabricks.net/oidc/accounts/$DATABRICKS_ACCOUNT_ID/v1/token \
+              --user "$DATABRICKS_CLIENT_ID:$DATABRICKS_CLIENT_SECRET" \
+              --data 'grant_type=client_credentials&scope=all-apis')
+              DATABRICKS_TOKEN=$(echo $response | jq -r '.access_token')
+              DATABRICKS_HOST=$(DATABRICKS_HOST)
+              echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\ntoken = $DATABRICKS_TOKEN" > ~/.databrickscfg
               
-              if (Test-Path $configPath) {
-                  Write-Host "Databricks CLI configuration file created successfully."
-                  $env:DATABRICKS_CONFIG_FILE = $configPath
-                  Write-Host "DATABRICKS_CONFIG_FILE environment variable set to $configPath"
-              } else {
-                  Write-Error "Failed to create Databricks CLI configuration file."
-                  exit 1
-              }
+          env:
+            DATABRICKS_HOST: $ {{ parameters.databricksHost }}
+            DATABRICKS_CLIENT_SECRET: ${{ parameters.databricksClientSecret }}
+            DATABRICKS_CLIENT_ID: ${{ parameters.databricksClientId }} 
+            DATABRICKS_ACCOUNT_ID: ${{ parameters.databricksAccountID }}
+          displayName: 'Authenticate with Azure CLI and Configure Databricks CLI'
 
-        # - script: |
-        #     export DATABRICKS_HOST=${{ parameters.databricksHost }}
-        #     export DATABRICKS_CLIENT_ID=${{ parameters.databricksClientId }}
-        #     export DATABRICKS_CLIENT_SECRET=${{ parameters.databricksClientSecret }}
-        #     databricks workspace ls
-        #   displayName: 'Configure Databricks CLI with Client Credentials'
-
-
-        # - task: AzureCLI@2
-        #   inputs:
-        #     azureSubscription: ${{ parameters.serviceConnection }}
-        #     useGlobalConfig: true
-        #     scriptType: bash
-        #     scriptLocation: inlineScript
-        #     inlineScript: |
-        #       export DATABRICKS_HOST= ${{ parameters.databricksHost }}
-        #       databricks workspace list /Users
-
-
-        # - script: |
-        #     echo "Testing Databricks CLI authentication..."
-        #     DATABRICKS_CONFIG_FILE=~/.databrickscfg databricks workspace ls
-        #   displayName: 'Testing Databricks CLI module'
-        #   env:
-        #     DATABRICKS_HOST: ${{ parameters.databricksHost }}
-        #     DATABRICKS_CLIENT_ID: ${{ parameters.databricksClientId }}
-        #     DATABRICKS_CLIENT_SECRET: ${{ parameters.databricksClientSecret }}
-
-        # - script: |
-        #     databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live --overwrite
-        #   displayName: 'Deploy files to Databricks workspace'
-        #   env:
-        #     DATABRICKS_HOST: $(DATABRICKS_HOST)
-        #     DATABRICKS_CLIENT_ID: $(DATABRICKS_CLIENT_ID)
-        #     DATABRICKS_CLIENT_SECRET: $(DATABRICKS_CLIENT_SECRET)
-
-
-
-
-
-        # - script: |
-        #     mkdir -p ~/.databricks
-        #     touch ~/.databrickscfg
-        #     echo "[DEFAULT]" > ~/.databrickscfg
-        #     echo "host = $DATABRICKS_HOST" >> ~/.databrickscfg
-        #     echo "client_id = $DATABRICKS_CLIENT_ID" >> ~/.databrickscfg
-        #     echo "client_secret = $DATABRICKS_CLIENT_SECRET" >> ~/.databrickscfg
-        #     echo "Databricks CLI configuration file content:"
-        #     cat ~/.databrickscfg
-        #   displayName: 'Configure Databricks CLI'
-        #   env:
-        #     DATABRICKS_HOST: ${{ parameters.databricksHost }}
-        #     DATABRICKS_CLIENT_ID: ${{ parameters.databricksClientId }}
-        #     DATABRICKS_CLIENT_SECRET: ${{ parameters.databricksClientSecret }}
+        - script: |
+            databricks workspace ls
+            databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live3 --overwrite
+          displayName: 'Write out notebooks to Workspace'

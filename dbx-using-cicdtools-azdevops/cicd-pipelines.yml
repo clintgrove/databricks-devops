@@ -7,11 +7,6 @@ variables:
   - template: .\env-variables.yml
   - name: notebooksPath
     value: "dbx-using-cicdtools-azdevops/notebooks"
-  - name: databricksClientId-appreg-srvcondevops-dev
-    value: "557fa95a-5c11-4b0c-987a-d38b6633b07b"
-
-# pool:
-#   vmImage:  windows-latest" (this is if you are using a azurehosted agent)
 
 
 pool:
@@ -33,12 +28,12 @@ stages:
          stageId: "Deploy_to_Dev_Environment"
          env: "dev"
          environmentName: ${{ variables['dev-environment-name'] }}
-         resourceGroupName: ${{ variables['dev-resource-group-name'] }}
          serviceConnection: ${{ variables['dev-service-connection-name'] }}
          notebooksPath: $(notebooksPath)
          databricksHost: ${{ variables['dev-databricks-host'] }}
-         databricksClientId: $(databricksClientId-appreg-srvcondevops-dev)
-         databricksClientSecret: $(databrickstoken-appreg-srvcondevops-dev)
+         databricksClientId: ${{ variables['dev-databricks-clientid'] }}
+         databricksClientSecret: $(databrickstoken-appreg-srvcondevops-dev) # from azure devops pipeline library (-group Dev-vars (see above)), which is connected to azure key vault, but you can also use a secret variable from the pipeline library
+         databricksAccountID: ${{ variables['dev-databricks-sp-accountid'] }}
 
 #  - stage: DoingProd
 #    dependsOn: DoingDev  # Ensures PROD runs only after DEV succeeds
