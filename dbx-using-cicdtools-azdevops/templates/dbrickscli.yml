@@ -36,11 +36,6 @@ jobs:
             pip install databricks-cli
           displayName: 'Install Databricks CLI'
 
-        - script: |
-            echo "Databricks Host: ${{ parameters.databricksHost }}"
-            echo "Databricks Client ID: ${{ parameters.databricksClientId }}"   
-            echo "Databricks Account ID: ${{ parameters.databricksAccountID }}"
-            echo "Databricks Client Secret: ${{ parameters.databricksClientSecret }}"
 
         - task: AzureCLI@2
           inputs:
@@ -60,7 +55,7 @@ jobs:
               DATABRICKS_TOKEN=$(echo $response | jq -r '.access_token')
               DATABRICKS_HOST=$(DATABRICKS_HOST)
               echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\ntoken = $DATABRICKS_TOKEN" > ~/.databrickscfg
-              
+              databricks workspace ls
           env:
             DATABRICKS_HOST: ${{ parameters.databricksHost }}
             DATABRICKS_CLIENT_SECRET: ${{ parameters.databricksClientSecret }}
