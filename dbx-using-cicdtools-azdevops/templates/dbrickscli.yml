@@ -62,7 +62,7 @@ jobs:
               echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\ntoken = $DATABRICKS_TOKEN" > ~/.databrickscfg
               
           env:
-            DATABRICKS_HOST: $ {{ parameters.databricksHost }}
+            DATABRICKS_HOST: ${{ parameters.databricksHost }}
             DATABRICKS_CLIENT_SECRET: ${{ parameters.databricksClientSecret }}
             DATABRICKS_CLIENT_ID: ${{ parameters.databricksClientId }} 
             DATABRICKS_ACCOUNT_ID: ${{ parameters.databricksAccountID }}
@@ -70,5 +70,4 @@ jobs:
 
         - script: |
             databricks workspace ls
-            # databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live3 --overwrite
           displayName: 'Write out notebooks to Workspace'
