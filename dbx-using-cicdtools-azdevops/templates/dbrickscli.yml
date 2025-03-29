@@ -26,6 +26,8 @@ jobs:
     runOnce:
       deploy:
         steps:
+        - checkout: self
+
         - task: UsePythonVersion@0
           inputs:
             versionSpec: '3.x'
@@ -35,7 +37,10 @@ jobs:
             python -m pip install --upgrade pip
             pip install databricks-cli
           displayName: 'Install Databricks CLI'
-
+          
+        - script: |
+            ls -al $(Build.SourcesDirectory)/${{ parameters.notebooksPath }}
+          displayName: 'List contents of notebooks directory'
 
         - task: AzureCLI@2
           inputs:
