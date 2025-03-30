@@ -37,7 +37,7 @@ jobs:
             python -m pip install --upgrade pip
             pip install databricks-cli
           displayName: 'Install Databricks CLI'
-          
+
         - script: |
             ls -al $(Build.SourcesDirectory)/${{ parameters.notebooksPath }}
           displayName: 'List contents of notebooks directory'
@@ -59,7 +59,8 @@ jobs:
               --data 'grant_type=client_credentials&scope=all-apis')
               DATABRICKS_TOKEN=$(echo $response | jq -r '.access_token')
               echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\ntoken = $DATABRICKS_TOKEN" > ~/.databrickscfg
-
+              echo "Testing Databricks CLI connection..."
+              databricks workspace ls
           env:
             DATABRICKS_HOST: ${{ parameters.databricksHost }}
             DATABRICKS_CLIENT_SECRET: ${{ parameters.databricksClientSecret }}
@@ -68,6 +69,6 @@ jobs:
           displayName: 'Authenticate with Azure CLI and Configure Databricks CLI'
 
         - script: |
-            databricks workspace ls
+
             databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live4 --overwrite
           displayName: 'Write notebooks to Workspace'
