@@ -19,6 +19,7 @@ pool:
 
 stages:
  - stage: DoingDev
+   condition: false
    variables:
      - group: Dev-vars
       # Deploy Notebooks
@@ -34,7 +35,7 @@ stages:
         databricksClientId: ${{ variables['dev-databricks-clientid'] }}
         databricksClientSecret: $(databrickstoken-appreg-srvcondevops-dev) # from azure devops pipeline library (-group Dev-vars (see above)), which is connected to azure key vault, but you can also use a secret variable from the pipeline library
         databricksAccountID: ${{ variables['dev-databricks-sp-accountid'] }}
-        condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
+        # condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
 
  - stage: DoingProd
    dependsOn: DoingDev  # Ensures PROD runs only after DEV succeeds
