@@ -51,5 +51,5 @@ stages:
         notebooksPath: $(notebooksPath)
         databricksHost: ${{ variables['prod-databricks-host'] }}
         databricksClientId: ${{ variables['prod-databricks-clientid'] }}
-        databricksClientSecret: $(databrickstoken-appreg-srvconprodops-dev) # from azure prodops pipeline library (-group prod-vars (see above)), which is connected to azure key vault, but you can also use a secret variable from the pipeline library
+        databricksClientSecret: $(databrickstoken-appreg-srvconprodops-prod) # from azure prodops pipeline library (-group prod-vars (see above)), which is connected to azure key vault, but you can also use a secret variable from the pipeline library
         databricksAccountID: ${{ variables['prod-databricks-sp-accountid'] }}
