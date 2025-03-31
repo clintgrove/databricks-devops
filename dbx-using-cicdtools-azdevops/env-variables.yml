@@ -1,9 +1,16 @@
 variables:
   dev-environment-name :  'dev'
-  dev-resource-group-name :  'dbr-analytics-dev'
-  dev-service-connection-name :  'clintazrealallrgs'
-
+  dev-resource-group-name :  'dbx-analytics-dev' #the resource group name in Azure where the Databricks workspace is located
+  dev-service-connection-name :  'bloom-connect-vse' #the service connection name in Azure DevOps that is used to connect to the Databricks workspace
+  dev-databricks-host: 'https://adb-1055291633315799.19.azuredatabricks.net' #the host name of the Databricks workspace in Azure
+  dev-databricks-sp-accountid: '6f11c974-e6ce-45aa-9df3-cb8d50d74416' # the account id of the service principal which you obtain using the account dashboard in Azure Databricks 
+  dev-databricks-clientid: '557fa95a-5c11-4b0c-987a-d38b6633b07b' #the client_id of service principal in EntraID which is also in my case the principal used in serviceConnection in Azure DevOps (this is the app registration id in EntraID)
 
   prod-environment-name :  'prod'
-  prod-resource-group-name :  'dbr-analytics-prod'
-  prod-service-connection-name :  'clintazrealallrgs'
+  prod-resource-group-name :  'dbx-analytics-prod' #the resource group name in Azure where the Databricks workspace is located
+  prod-service-connection-name :  'bloom-connect-vse' #the service connection name in Azure DevOps that is used to connect to the Databricks workspace
+  prod-databricks-host: 'https://adb-2262937393579434.14.azuredatabricks.net' #the host name of the Databricks workspace in Azure
+  prod-databricks-sp-accountid: '6f11c974-e6ce-45aa-9df3-cb8d50d74416' #the account id of the service principal which you obtain using the account dashboard in Azure Databricks 
+  prod-databricks-clientid: '557fa95a-5c11-4b0c-987a-d38b6633b07b' #the client_id of service principal in EntraID which is also in my case the principal used in serviceConnection in Azure DevOps (this is the app registration id in EntraID)
+
+

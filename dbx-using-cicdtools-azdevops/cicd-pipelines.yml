@@ -3,35 +3,50 @@ trigger:
 
 variables:
   - template: .\env-variables.yml
-    
-  - name: vmImageName
-    value: "windows-latest"
   - name: notebooksPath
     value: "dbx-using-cicdtools-azdevops/notebooks"
 
 pool:
-  vmImage:  $(vmImageName)
+  vmImage: 'ubuntu-latest'
+
+# pool:
+#   name: 'fiftysix-agents-devops' # Specify the agent pool name
+#   demands:
+#     - Agent.Name -equals vm-fiftysix0=-agent1 # Target the specific agent
 
 stages:
  - stage: DoingDev
-   jobs:
-    - template: templates/deploy-notebooks.yml
+   condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
+   variables:
+     - group: Dev-vars
+      # Deploy Notebooks
+   jobs: 
+    - template: templates/dbrickscli.yml
       parameters:
         stageId: "Deploy_to_Dev_Environment"
         env: "dev"
         environmentName: ${{ variables['dev-environment-name'] }}
-        resourceGroupName: ${{ variables['dev-resource-group-name'] }}
         serviceConnection: ${{ variables['dev-service-connection-name'] }}
         notebooksPath: $(notebooksPath)
+        databricksHost: ${{ variables['dev-databricks-host'] }}
+        databricksClientId: ${{ variables['dev-databricks-clientid'] }}
+        databricksClientSecret: $(databrickstoken-appreg-srvcondevops-dev) # from azure devops pipeline library (-group Dev-vars (see above)), which is connected to azure key vault, but you can also use a secret variable from the pipeline library
+        databricksAccountID: ${{ variables['dev-databricks-sp-accountid'] }}
+        
 
  - stage: DoingProd
    dependsOn: DoingDev  # Ensures PROD runs only after DEV succeeds
+   variables:
+     - group: Prod-vars
    jobs:
-    - template: templates/deploy-notebooks.yml
+    - template: templates/dbrickscli.yml
       parameters:
         stageId: "Deploy_to_PROD_Environment"
         env: "prod"
         environmentName: ${{ variables['prod-environment-name'] }}
-        resourceGroupName: ${{ variables['prod-resource-group-name'] }}
         serviceConnection: ${{ variables['prod-service-connection-name'] }}
         notebooksPath: $(notebooksPath)
+        databricksHost: ${{ variables['prod-databricks-host'] }}
+        databricksClientId: ${{ variables['prod-databricks-clientid'] }}
+        databricksClientSecret: $(databrickstoken-appreg-srvconprodops-prod) # from azure prodops pipeline library (-group prod-vars (see above)), which is connected to azure key vault, but you can also use a secret variable from the pipeline library
+        databricksAccountID: ${{ variables['prod-databricks-sp-accountid'] }}

@@ -1,8 +1,8 @@
 # The main job for budlineclint1.
 resources:
   jobs:
-    budlineclint1_job:
-      name: budlineclint1_job
+    JOB_CALLADF:
+      name: JOB_CALLADF
 
       trigger:
         # Run this job every day, exactly one day from the last run; see https://docs.databricks.com/api/workspace/jobs/create#trigger
@@ -18,21 +18,15 @@ resources:
         - task_key: notebook_task
           job_cluster_key: job_cluster
           notebook_task:
-            notebook_path: ../src/etl/notebook.ipynb
-        
-        - task_key: main_task
-          depends_on:
-            - task_key: notebook_task
-          
-          job_cluster_key: job_cluster
-          python_wheel_task:
-            package_name: budlineclint1
-            entry_point: main
+            notebook_path: ../src/DataFactoryOperations/Data Factory Notebook Fire off pipeline.ipynb
           libraries:
-            # By default we just include the .whl file generated for the budlineclint1 package.
-            # See https://docs.databricks.com/dev-tools/bundles/library-dependencies.html
-            # for more information on how to add other libraries.
-            - whl: ../dist/*.whl
+          - pypi:
+              package: azure-identity
+              repo: https://pypi.org/simple
+          - pypi:
+              package: azure-mgmt-datafactory
+              repo: https://pypi.org/simple
+        
 
       job_clusters:
         - job_cluster_key: job_cluster

@@ -7,7 +7,7 @@ param(
   [int] $tokenLifeTimeSeconds = 300
 )
 
-$azureDatabricksPrincipalId = "2ff814a6-3304-4ab8-85cb-cd0e6f879c1d"
+$azureDatabricksPrincipalId = "2ff814a6-3304-4ab8-85cb-cd0e6f879c1d" #Every tenant has an ID for "AzureDatabricks". To find it just search in EntraID for that name. 
 $headers = @{}
 # From this site https://medium.com/@akshaybagal/mastering-ci-cd-for-azure-databricks-notebooks-using-azure-devops-pipeline-a-comprehensive-guide-cfe7538e4944
 # Get Azure AD access token for Databricks API

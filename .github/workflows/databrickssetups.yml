@@ -1,0 +1,30 @@
+name: Deploy Databricks Secret Scope
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install Databricks CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install python3-pip
+          pip3 install databricks-cli
+
+      - name: Configure Databricks CLI
+        run: |
+          databricks configure --host https://adb-110239645136689.9.azuredatabricks.net --token ${{ secrets.DATABRICKS_TOKEN_PROD }}
+
+      - name: Create Key Vault-Backed Secret Scope
+        run: |
+          databricks secrets create-scope --scope <scope-name> \
+            --scope-backend-type AZURE_KEYVAULT \
+            --resource-id <azure-keyvault-resource-id> \
+            --dns-name <azure-keyvault-dns-name>
