@@ -1,13 +1,10 @@
 trigger:
     - main
-    - addbasicdbxws
-    - cgpersonal
 
 variables:
   - template: .\env-variables.yml
   - name: notebooksPath
     value: "dbx-using-cicdtools-azdevops/notebooks"
-
 
 pool:
   vmImage: 'ubuntu-latest'
