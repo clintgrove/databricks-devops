@@ -1,5 +1,12 @@
-Running this from Azure Devops or GitHub Actions
-## Idea for Azure Devops from 
+# How to promote or push your notebooks and python files to a Databricks workspace using CI/CD or devops
+We are running pipelines from Azure Devops and GitHub Actions to demonstrate how you can use the Databricks CLI capabilities like `databricks workspace` from the command line to copy files from your local or from your git repository to the Databricks workspace to any location you specify. You can set `--overwrite` to make sure that you overwrite any existing files there. 
+
+# Prerequisites
+- 2 Databricks workspaces. As I have set this up to mimic a Dev to Prod type promotion
+- The Databricks workspaces need to have Unity Catalog
+- You need access to the Account Dashboard
+
+## Setting this up for Azure Devops 
 From this site https://medium.com/@akshaybagal/mastering-ci-cd-for-azure-databricks-notebooks-using-azure-devops-pipeline-a-comprehensive-guide-cfe7538e4944
 
 Currently the Azure Devops is going through my clintgrove organisation. It is deploying to Databricks on Microsoft Non-production. 
