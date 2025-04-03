@@ -45,14 +45,14 @@ Then select "Existing yaml file" and look for the ymal file named "cicd-pipeline
 * Thanks to https://endjin.com/blog/2019/09/import-and-export-notebooks-in-databricks for the idea on setting up Github actions. 
 
 ### Action variables
-[go to settings and actions/sercrets and variables](./images/actionssecrets.png)
+![go to settings and actions/sercrets and variables](./images/actionssecrets.png)
 Gather up information on your application id (which you will set as your client_id). Find your Tenant ID by searching "Tenant properties" in Azure portal. Then add these to your Github actions like you see below
 
-[add these secrets](./images/listofvariablessecrets.png)
+![add these secrets](./images/listofvariablessecrets.png)
 
 The reason you will not need a Client secret is because the best way to set this up is to use "Federated credentials". It is simple to set up a handshake between your application registration (SPN) and your Github repository. Go ahead and set it up and it will look something like this. 
 
-[create handshake between app id and github](./images/federated%20credential%20github%20app%20id.png)
+![create handshake between app id and github](./images/federated%20credential%20github%20app%20id.png)
  
 Note to self (It is deploying to Databricks on Microsoft Non-production.)
 
