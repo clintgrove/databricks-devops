@@ -14,17 +14,17 @@ If you want to set this up like I did then you need to do two things on Devops.
 
 My libraries are called Dev-vars and Prod-vars. Inside these libraries are the secrets `databricksClientSecret: $(databrickstoken-appreg-srvcondevops-dev)` (and one for prod) which I created in the Databricks workspaces. 
 
-### Create your secret tokens in both dev and prod and save the secret in the Library groups
+### 1. Create your secret tokens in both dev and prod and save the secret in the Library groups
 Go the dev workspace and navigate to Settings/Identity and access/Service Principals/Manage. If your SPN (Service Principal) has not been added, then add it. It will be a EntraID managed principal, you will need a Application ID of the SPN. I added the same SPN that I used as the Service Connectionn SPN in Azure Devops. 
 
 Click on the Service principal and then look for the tab "Secrets". You need to create a secret on EACH databricks workspace, then save that secret to your Pipeline Library under the name `databrickstoken-appreg-srvcondevops-dev)` and `databrickstoken-appreg-srvcondevops-prod)` respectively, in the correct Variable groups.
 
-![create secret tokens from inside databricks workspace](image.png)
+![create secret tokens from inside databricks workspace](./images/image.png)
 
-### Look for your SPN's account ID
+### 1. Look for your SPN's account ID
 You will need access to accounts.azuredatabricks.net (or ask your companies admin to go to this site and get the Account ID for you)
 
-![how to get your account id from accounts dashboard in databricks](image-2.png)
+![how to get your account id from accounts dashboard in databricks](./images/image-2.png)
 
 Go to User Management/Service Principals/ then click on your SPN name, then look in the URL for the account_id=xxxxx and copy this ID number.
 
@@ -32,15 +32,29 @@ In the `dbx-using-cicdtools-azdevops/env-variables.yml` file, add your account I
 
 For example you would have different service connection names in both `dev-service-connection-name` and `prod-service-connection-name` in the env-variables.yml file. (and in the -clientid variable) 
 
-### Set up your Azure Devops pipeline
-Go to Pipelines/New pipeline. Then select Github yaml, then select the repository that you cloned/forked from my repo. Then select "Existing yaml file" 
+### 1. Set up your Azure Devops pipeline
+Go to Pipelines/New pipeline. Then select Github yaml, then select the repository that you cloned/forked from my repo. 
 
-Currently the Azure Devops is going through my personal clintgrove organisation. It is deploying to Databricks on my Visual Studio Subscription. 
+Then select "Existing yaml file" and look for the ymal file named "cicd-pipelines.yml". 
 
-## Idea for Github actions from 
-Thanks to https://endjin.com/blog/2019/09/import-and-export-notebooks-in-databricks
 
- It is deploying to Databricks on Microsoft Non-production. 
+* Currently the Azure Devops is going through my personal clintgrove organisation. It is deploying to Databricks on my Visual Studio Subscription. 
+
+## Github actions
+
+* Thanks to https://endjin.com/blog/2019/09/import-and-export-notebooks-in-databricks for the idea on setting up Github actions. 
+
+### Action variables
+[go to settings and actions/sercrets and variables](./images/actionssecrets.png)
+Gather up information on your application id (which you will set as your client_id). Find your Tenant ID by searching "Tenant properties" in Azure portal. Then add these to your Github actions like you see below
+
+[add these secrets](./images/listofvariablessecrets.png)
+
+The reason you will not need a Client secret is because the best way to set this up is to use "Federated credentials". It is simple to set up a handshake between your application registration (SPN) and your Github repository. Go ahead and set it up and it will look something like this. 
+
+[create handshake between app id and github](./images/federated%20credential%20github%20app%20id.png)
+ 
+Note to self (It is deploying to Databricks on Microsoft Non-production.)
 
  ## Asset Bundles
  These are pointing to my Contoso tenant.
