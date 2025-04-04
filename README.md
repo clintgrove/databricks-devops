@@ -2,14 +2,17 @@
 We are running pipelines from Azure Devops and GitHub Actions to demonstrate how you can use the Databricks CLI capabilities like `databricks workspace` from the command line to copy files from your local or from your git repository to the Databricks workspace to any location you specify. You can set `--overwrite` to make sure that you overwrite any existing files there. 
 
 The command we want to use is 
-`databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live4 --overwrite`
+`databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} Shared/live4 --overwrite`
 
-where the `/live4` can be any name you want, it doesn't have to be that. Also you can put it in /Users if you wanted to. Workspaces have 
-    /Users 
-    /Repos
-    /Shared 
+where the `Shared/live4` can be any name you want, it doesn't have to be that. Also you can put it in /Users if you wanted to. 
 
-So you can put in ni these folders first by doing something like `/Users/live` or `/Users/assets/notebooks` or whatever you want. 
+Workspaces have 
+    
+>    /Users 
+>    /Repos
+>    /Shared 
+
+So you can put it in these folders by coding it like `/Users/live` or `/Users/assets/notebooks` or whatever you want. 
 
 # Prerequisites
 - 2 Databricks workspaces. As I have set this up to mimic a Dev to Prod type promotion
