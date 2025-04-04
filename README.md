@@ -33,9 +33,11 @@ Click on the Service principal and then look for the tab "Secrets". You need to 
 
 ![create secret tokens from inside databricks workspace](./images/image.png)
 
-Its up to your company to decide whether you will use the same SPN to promote code to both DEV and Prod. If you choose to have different SPN's do the work, then you can easily adjust the yaml files and create secrets and service connections for the different SPN's. 
+Its up to your company to decide whether you will use the same SPN to promote code to both DEV and Prod. If you choose to have different SPN's do the work, then you can easily adjust the yaml files and create secrets and service connections for the different SPN's (See the env-variables.yml to see my set up).
 
-For example you would have different service connection names in both `dev-service-connection-name` and `prod-service-connection-name` in the env-variables.yml file. (and in the -clientid variable) 
+For example you would have different service connection names in both `dev-service-connection-name` and `prod-service-connection-name` in the env-variables.yml file. (and in the -clientid variable). 
+
+From what I can tell there is no need to set RBAC permissions in Azure portal in the Resource goup or on the Resource (Databricks) for this to work. All you need to do is create a secret token inside the databricks workspace using the SPN, then add that secret to the Library variable and be sure to add the SPN's app id to the env-varibles.yml for the databricks workspace in question. 
 
 ### 1. Look for your Databricks Account ID
 You will need access to accounts.azuredatabricks.net (or ask your companies admin to go to this site and get the Account ID for you)
