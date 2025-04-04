@@ -70,5 +70,5 @@ jobs:
 
         - script: |
 
-            databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /live4 --overwrite
+            databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} Workspace/live4 --overwrite
           displayName: 'Write notebooks to Workspace'
