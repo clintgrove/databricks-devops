@@ -22,9 +22,13 @@ jobs:
         env:
           DATABRICKS_HOST: https://adb-1432846341870043.3.azuredatabricks.net
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_DEV }}
+        
         run: |
-          databricks auth configure --host $DATABRICKS_HOST --token $DATABRICKS_TOKEN
-  
+            databricks configure --token <<EOF
+            $DATABRICKS_HOST
+            $DATABRICKS_TOKEN
+            EOF
+
       - name: Create Key Vault-Backed Secret Scope
         run: |
           databricks secrets create-scope --scope dbxsecrets1 \
