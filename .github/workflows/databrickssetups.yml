@@ -19,9 +19,12 @@ jobs:
           pip3 install databricks-cli
 
       - name: Configure Databricks CLI
+        env:
+          DATABRICKS_HOST: https://adb-1432846341870043.3.azuredatabricks.net
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_DEV }}
         run: |
-          databricks configure --host https://adb-1432846341870043.3.azuredatabricks.net/ --token ${{ secrets.DATABRICKS_TOKEN_DEV }}
-
+          databricks auth configure --host $DATABRICKS_HOST --token $DATABRICKS_TOKEN
+  
       - name: Create Key Vault-Backed Secret Scope
         run: |
           databricks secrets create-scope --scope dbxsecrets1 \
