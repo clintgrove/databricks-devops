@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      
+
 permissions:
   id-token: write 
   contents: read
@@ -44,6 +44,9 @@ jobs:
         run: |
           databricks secrets create-scope --scope dbxsecrets1 \
             --scope-backend-type AZURE_KEYVAULT \
+            --backend-azure-keyvault-dns-name https://keyvault-forgeneraluse.vault.azure.net/ \
+            --backend-azure-keyvault-resource-id /subscriptions/3be2ce56-4a5f-4034-88d7-2953d1819ed3/resourceGroups/commonResources/providers/Microsoft.KeyVault/vaults/keyvault-forgeneraluse \
             --resource-id /subscriptions/3be2ce56-4a5f-4034-88d7-2953d1819ed3/resourceGroups/commonResources/providers/Microsoft.KeyVault/vaults/keyvault-forgeneraluse \
             --dns-name https://keyvault-forgeneraluse.vault.azure.net/ \
-            --initial-manage-principal "users"
+            --initial-manage-principal "Creator"
+
