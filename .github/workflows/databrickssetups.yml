@@ -16,12 +16,18 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Install Databricks CLI (v0.200+ via install script)
+      - name: Install Databricks CLI (v0.200+)
         run: |
-          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
-          databricks --version
+          # Download and install the new CLI
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | bash
       
-
+          # Add to PATH
+          echo "$HOME/.databricks/bin" >> $GITHUB_PATH
+      
+          # Confirm it's the new CLI (v0.200+)
+          ~/.databricks/bin/databricks version
+      
+      
       - name: Azure Login
         uses: Azure/login@v2.2.0
         with:
@@ -29,24 +35,23 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: "3be2ce56-4a5f-4034-88d7-2953d1819ed3"
       
-      - name: Configure Databricks CLI with AAD auth
+      - name: Azure Login + Databricks AAD Auth
         env:
           ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
           ARM_SUBSCRIPTION_ID: "3be2ce56-4a5f-4034-88d7-2953d1819ed3"
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
         run: |
-          # Login to Azure using az CLI
           az login --service-principal \
             --username $ARM_CLIENT_ID \
             --tenant $ARM_TENANT_ID \
-            --password ${{ secrets.AZURE_CLIENT_SECRET }}
-        
-          # Set environment variables needed by databricks auth login
-          export DATABRICKS_AZURE_RESOURCE_ID="/subscriptions/3be2ce56-4a5f-4034-88d7-2953d1819ed3/resourceGroups/commonResources/providers/Microsoft.Databricks/workspaces/dedbxcl440"
+            --password $AZURE_CLIENT_SECRET
+      
           export DATABRICKS_HOST="https://adb-1432846341870043.3.azuredatabricks.net"
+          export DATABRICKS_AZURE_RESOURCE_ID="/subscriptions/3be2ce56-4a5f-4034-88d7-2953d1819ed3/resourceGroups/commonResources/providers/Microsoft.Databricks/workspaces/YOUR_WORKSPACE_NAME"
+      
+          ~/.databricks/bin/databricks auth login --azure-login --host $DATABRICKS_HOST
         
-          # Authenticate using AAD and set the profile
-          databricks auth login --azure-login --host $DATABRICKS_HOST
         
       # - name: Configure Databricks CLI
       #   env:
