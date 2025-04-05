@@ -21,7 +21,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y python3-pip
           pip3 install --upgrade pip
-          pip3 install databricks-cli==0.205.0  # Use a version that supports `auth login`
+          pip3 install databricks
       
 
       - name: Azure Login
@@ -44,7 +44,7 @@ jobs:
             --password ${{ secrets.AZURE_CLIENT_SECRET }}
         
           # Set environment variables needed by databricks auth login
-          export DATABRICKS_AZURE_RESOURCE_ID="/subscriptions/3be2ce56-4a5f-4034-88d7-2953d1819ed3/resourceGroups/commonResources/providers/Microsoft.Databricks/workspaces/YOUR_WORKSPACE_NAME"
+          export DATABRICKS_AZURE_RESOURCE_ID="/subscriptions/3be2ce56-4a5f-4034-88d7-2953d1819ed3/resourceGroups/commonResources/providers/Microsoft.Databricks/workspaces/dedbxcl440"
           export DATABRICKS_HOST="https://adb-1432846341870043.3.azuredatabricks.net"
         
           # Authenticate using AAD and set the profile
