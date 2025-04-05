@@ -92,7 +92,7 @@ In the `dbx-using-cicdtools-azdevops/env-variables.yml` file, add your account I
 #### 4.1 Create the library and variables
 You will need to create Pipeline Library variable groups named the same as mine, or adjust the code to suit the name of your libraries. (Look for `- group: Dev-vars` this is the name of the Library group in Devops). 
 
-Add the secret tokens that you created for the SPN's. My libraries are called Dev-vars and Prod-vars. Inside these libraries are the secrets `databricksClientSecret: $(databrickstoken-appreg-srvcondevops-dev)` (and one for prod) which I created in the Databricks workspaces. 
+Add the secret tokens that you created for the SPN's in Databricks Workspace. My libraries are called Dev-vars and Prod-vars. Inside these libraries are the secrets `databricksClientSecret: $(databrickstoken-appreg-srvcondevops-dev)` (and one for prod) which I created in the Databricks workspaces. 
 
 #### 4.2 Create the pipeline
 Go to Pipelines/New pipeline. Then select Github yaml, then select the repository that you cloned/forked from my repo. 
@@ -100,15 +100,19 @@ Go to Pipelines/New pipeline. Then select Github yaml, then select the repositor
 Then select "Existing yaml file" and look for the ymal file named "cicd-pipelines.yml". 
 
 
-* Currently the Azure Devops is going through my personal clintgrove organisation. It is deploying to Databricks on my Visual Studio Subscription. 
+_Note to self: Currently the Azure Devops is going through my personal clintgrove organisation. It is deploying to Databricks on my Visual Studio Subscription._ 
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+###############################################################################################################################
 
 ## Github actions
 
-* Thanks to https://endjin.com/blog/2019/09/import-and-export-notebooks-in-databricks for the idea on setting up Github actions. 
+(_Thanks to https://endjin.com/blog/2019/09/import-and-export-notebooks-in-databricks for the idea on setting up Github actions._)
 
 ### Action secrets and variables
 
-In your repo, navigate to Settings, then look for Security/Secrets and variables and click on "Actions". 
+In your Github repo, navigate to Settings, then look for Security/Secrets and variables and click on "Actions". 
 
 ![go to settings and actions/sercrets and variables](./images/actionssecrets.png)
 
@@ -116,11 +120,28 @@ Gather up information on your application id (which you will set as your client_
 
 ![add these secrets](./images/listofvariablessecrets.png)
 
-The reason you will not need a Client secret is because the best way to set this up is to use "Federated credentials". It is simple to set up a handshake between your application registration (SPN) and your Github repository. Go ahead and set it up and it will look something like this. 
+The reason you will **NOT** need a Client secret is because the best way to set this up is to use "Federated credentials", which is simple to set up a handshake between your application registration (SPN) and your Github repository. Go ahead and set it up and it will look something like this. 
 
 ![create handshake between app id and github](./images/federated%20credential%20github%20app%20id.png)
  
-Note to self (It is deploying to Databricks on Microsoft Non-production.)
+ ### Actions
+
+ If you have cloned for forkey my repository then when you navigate to "Actions" tab in your Github Repo, you will see that there is a "workflow" named "db1-main". 
+ 
+ This is the workflow you can run without needing to set up anything else, as you would have put in the details in the previous step. 
+
+ To recap, make sure that you add all of these to the Secrets and varialbes/Actions part (this forms your repository secrets, see above step). Below is a snippet from the yaml file in this repository (deploydbx.yml). It will read from your repository secrets
+
+```
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      DATABRICKS_TOKEN : ${{ secrets.DATABRICKS_TOKEN_DEV }}
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST_DEV}}
+```
+
+
+_Note to self: (It is deploying to Databricks on Microsoft Non-production.)_
 
  ## Asset Bundles
  These are pointing to my Contoso tenant.

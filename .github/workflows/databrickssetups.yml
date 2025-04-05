@@ -20,11 +20,11 @@ jobs:
 
       - name: Configure Databricks CLI
         run: |
-          databricks configure --host https://adb-110239645136689.9.azuredatabricks.net --token ${{ secrets.DATABRICKS_TOKEN_PROD }}
+          databricks configure --host https://adb-1432846341870043.3.azuredatabricks.net/ --token ${{ secrets.DATABRICKS_TOKEN_DEV }}
 
       - name: Create Key Vault-Backed Secret Scope
         run: |
-          databricks secrets create-scope --scope <scope-name> \
+          databricks secrets create-scope --scope dbxsecrets1 \
             --scope-backend-type AZURE_KEYVAULT \
-            --resource-id <azure-keyvault-resource-id> \
-            --dns-name <azure-keyvault-dns-name>
+            --resource-id /subscriptions/1943f6e4-c483-433c-a82b-cc02e45ad73c/resourceGroups/datagame/providers/Microsoft.KeyVault/vaults/kv-clint-generic \
+            --dns-name https://kv-clint-generic.vault.azure.net/
