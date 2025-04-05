@@ -26,5 +26,5 @@ jobs:
         run: |
           databricks secrets create-scope --scope dbxsecrets1 \
             --scope-backend-type AZURE_KEYVAULT \
-            --resource-id /subscriptions/1943f6e4-c483-433c-a82b-cc02e45ad73c/resourceGroups/datagame/providers/Microsoft.KeyVault/vaults/kv-clint-generic \
-            --dns-name https://kv-clint-generic.vault.azure.net/
+            --resource-id /subscriptions/3be2ce56-4a5f-4034-88d7-2953d1819ed3/resourceGroups/commonResources/providers/Microsoft.KeyVault/vaults/keyvault-forgeneraluse \
+            --dns-name https://keyvault-forgeneraluse.vault.azure.net/
