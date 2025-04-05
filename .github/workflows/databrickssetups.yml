@@ -16,11 +16,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Install Databricks CLI
+      - name: Install New Databricks CLI (v0.200+)
         run: |
           sudo apt-get update
-          sudo apt-get install python3-pip
-          pip3 install databricks-cli
+          sudo apt-get install -y python3-pip
+          pip3 install --upgrade pip
+          pip3 install databricks-cli==0.205.0  # Use a version that supports `auth login`
+      
 
       - name: Azure Login
         uses: Azure/login@v2.2.0
