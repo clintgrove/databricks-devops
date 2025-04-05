@@ -2,12 +2,14 @@
 We are running pipelines from Azure Devops and GitHub Actions to demonstrate how you can use the Databricks CLI capabilities like `databricks workspace` from the command line to copy files from your local or from your git repository to the Databricks workspace to any location you specify. You can set `--overwrite` to make sure that you overwrite any existing files there. 
 
 The command we want to use for Azure Devops is: 
+
 `databricks workspace import_dir $(Build.SourcesDirectory)/${{ parameters.notebooksPath }} /Shared/live4 --overwrite`
 
 If you are using Github Actions then it is:
+
 `databricks workspace import_dir --overwrite ${{ inputs.notebooksPath }} /Shared/live4`
 
-where the `/Shared/live4` can be any name you want, it doesn't have to be that. Also you can put it in `/Users/live` or `/Users/assets/notebooks` if you wanted to. 
+Where the `/Shared/live4` can be any name you want, it doesn't have to be that. Also you can put it in `/Users/live` or `/Users/assets/notebooks` if you wanted to. 
 
 Workspaces have these folders by default: 
     
@@ -24,42 +26,47 @@ Workspaces have these folders by default:
 - Clone or fork from my repository so that you can make this your own and adjust values where you need to. 
 
 ## Setting this up for Azure Devops 
-If you want to set this up like I did then you need to do two things on Devops. 
-1. Create your Service Connection (which is an app registration in Entra ID, aka a SPN (Service Principal)) in Azure devops 
-2. Add the SPN to the Databricks workspace
-3. Find the "Account ID" of Admin Dashboard (accounts.azuredatabricks.net)
-4. Create your Azure Devops Pipeline and run it
+If you want to set this up like I did then you need to do a few things on Devops. 
+1. Create your Service Connection in Azure devops (which is an app registration in Entra ID, aka a SPN (Service Principal)).
+2. Add the SPN to the Databricks workspace.
+3. Find the "Account ID" of Admin Dashboard (accounts.azuredatabricks.net).
+4. Create your Azure Devops Pipeline and run it.
 
-My libraries are called Dev-vars and Prod-vars. Inside these libraries are the secrets `databricksClientSecret: $(databrickstoken-appreg-srvcondevops-dev)` (and one for prod) which I created in the Databricks workspaces. 
 
 ### 1. Set up a "Service Connection" in Azure Devops
 
 Go to Project Settings in Azure Devops (look down at the bottom left of the page). I set my Service Connection up manually, which meant that I already had an app registration (aka SPN) created in EntraID and then connected to that SPN as a "Service Connection" in Azure Devops. I prefer doing it that way so that I can control the app registration process instead of letting Azure Devops create one for me. 
 
+Click on "New service connection"
+
 ![Create new service connection in azure devops](./images/devops1-scon1.png)
 
-Then click on the drop down for Identity Type and choose "manual" if you want to use an existing SPN (or automatic if you want to let Devops create one for you).
+
+Click on the drop down for Identity Type and choose "manual" if you want to use an existing SPN (or automatic if you want to let Devops create one for you).
 
 ![select identity type](./images/devops1-scon2.png)
+
 
 The "issuer" and the "Subject identitfier" in the next step is related to creating a federated credential on your SPN
 
 ![set up identifier](./images/devops1-scon3.png)
 
+
 The values that this window above gives for Issuer and Subject identifier is something you need to enter into your Credentials and Secrets page of your app registraition (SPN) in EntraID. See the screenshot below for hints. 
+
 
 ![input identifier](./images/devops1-scon4.png)
 
 
 I wont go into too much detail, but here is a site that may help https://learn.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops
 
-### 2. Setting for the SPN on the Databricks workspace
+### 2. Settings for the SPN on the Databricks Workspace
 
 You now need to create secret tokens in both dev and prod (* and save the secret in the Library groups, see point 4).
 
 Go the Databricks dev workspace and navigate to Settings/Identity and access/Service Principals/Manage. If your SPN (Service Principal) has not been added, then add it. When adding a new SPN, you will be adding an EntraID managed principal.
 
-You will need the Application ID of the SPN. I added the same SPN that I used as the Service Connectionn SPN in Azure Devops. 
+You will need the Application ID of the SPN (Add the same SPN that you set up as the Service Connectionn SPN in Azure Devops).
 
 Click on the Service principal and then look for the tab "Secrets". You need to create a secret on EACH databricks workspace, then copy that as you will need to save that secret to your Pipeline Library under the name `databrickstoken-appreg-srvcondevops-dev)` and `databrickstoken-appreg-srvcondevops-prod)` respectively, in the correct Variable groups (see point number 4.1 below).
 
@@ -85,7 +92,7 @@ In the `dbx-using-cicdtools-azdevops/env-variables.yml` file, add your account I
 #### 4.1 Create the library and variables
 You will need to create Pipeline Library variable groups named the same as mine, or adjust the code to suit the name of your libraries. (Look for `- group: Dev-vars` this is the name of the Library group in Devops). 
 
-Add the secret tokens that you created for the SPN's 
+Add the secret tokens that you created for the SPN's. My libraries are called Dev-vars and Prod-vars. Inside these libraries are the secrets `databricksClientSecret: $(databrickstoken-appreg-srvcondevops-dev)` (and one for prod) which I created in the Databricks workspaces. 
 
 #### 4.2 Create the pipeline
 Go to Pipelines/New pipeline. Then select Github yaml, then select the repository that you cloned/forked from my repo. 
