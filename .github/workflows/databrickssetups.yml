@@ -53,7 +53,7 @@ jobs:
           export DATABRICKS_HOST="https://adb-1432846341870043.3.azuredatabricks.net"
           export DATABRICKS_AZURE_RESOURCE_ID="/subscriptions/3be2ce56-4a5f-4034-88d7-2953d1819ed3/resourceGroups/commonResources/providers/Microsoft.Databricks/workspaces/YOUR_WORKSPACE_NAME"
       
-          ~/.databricks/bin/databricks auth login --azure-login --host $DATABRICKS_HOST
+          databricks auth login --azure-login --host $DATABRICKS_HOST
         
         
       # - name: Configure Databricks CLI
