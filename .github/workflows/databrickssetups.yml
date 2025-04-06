@@ -3,7 +3,8 @@ name: Deploy Databricks Secret Scope
 on:
   push:
     branches:
-      - fixsecretscopecreation
+      - fixsecretcreate
+  workflow_dispatch:
 
 permissions:
   id-token: write 
