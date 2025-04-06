@@ -78,7 +78,20 @@ jobs:
 
       - name: Create Key Vault-Backed Secret Scope
         run: |
-          databricks secrets create-scope --json @dbx-using-cicdtools-githubactions/scope-request.json
+          export AAD_TOKEN=$(cat aad_token.txt)
+          cat <<EOF > scope-request.json
+          {
+              "scope": "elysecretscope2",
+              "scope_backend_type": "AZURE_KEYVAULT",
+              "backend_azure_keyvault": {
+                  "resource_id": "/subscriptions/1943f6e4-c483-433c-a82b-cc02e45ad73c/resourceGroups/datagame/providers/Microsoft.KeyVault/vaults/kv-clint-generic",
+                  "dns_name": "https://kv-clint-generic.vault.azure.net",
+                  "userAADToken": "$AAD_TOKEN"
+              },
+              "initial_manage_principal": "users"
+          }
+          EOF
+          databricks secrets create-scope --json @scope-request.json
         env:
-          AAD_TOKEN: $(cat aad_token.txt)
+          DATABRICKS_TOKEN: ${{ secrets.ELYON_DBX_TOKEN_PROD }}
 
