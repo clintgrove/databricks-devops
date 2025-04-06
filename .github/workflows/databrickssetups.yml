@@ -3,7 +3,7 @@ name: Deploy Databricks Secret Scope
 on:
   push:
     branches:
-      - main
+      - fixsecretscopecreation
 
 permissions:
   id-token: write 
@@ -16,17 +16,19 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Install Databricks CLI (v0.200+)
-        run: |
-          # Download and install the new CLI
-          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | bash
+      # - name: Install Databricks CLI (v0.200+)
+      #   run: |
+      #     # Download and install the new CLI
+      #     curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | bash
       
-          # Add to PATH
-          echo "$HOME/.databricks/bin" >> $GITHUB_PATH
+      #     # Add to PATH
+      #     echo "$HOME/.databricks/bin" >> $GITHUB_PATH
       
-          # Confirm it's the new CLI (v0.200+)
-          ~/.databricks/bin/databricks version
+      #     # Confirm it's the new CLI (v0.200+)
+      #     ~/.databricks/bin/databricks version
       
+      - uses: databricks/setup-cli@main
+
       
       - name: Azure Login
         uses: Azure/login@v2.2.0
