@@ -1,0 +1,10 @@
+{
+    "scope": "elysecretscope2",
+    "scope_backend_type": "AZURE_KEYVAULT",
+    "backend_azure_keyvault": {
+      "resource_id": "/subscriptions/1943f6e4-c483-433c-a82b-cc02e45ad73c/resourceGroups/datagame/providers/Microsoft.KeyVault/vaults/kv-clint-generic",
+      "dns_name": "https://kv-clint-generic.vault.azure.net"
+    },
+    "initial_manage_principal": "users"
+  }
+  

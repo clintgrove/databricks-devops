@@ -52,50 +52,30 @@ jobs:
           DATABRICKS_ACCOUNT_ID: "6f11c974-e6ce-45aa-9df3-cb8d50d74416"
 
       
-      # - name: Azure Login
-      #   uses: Azure/login@v2.2.0
-      #   with:
-      #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
-      #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-      #     subscription-id: "3be2ce56-4a5f-4034-88d7-2953d1819ed3"
-      
-      # - name: Azure Login + Databricks AAD Auth
-      #   env:
-      #     ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-      #     ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      #     ARM_SUBSCRIPTION_ID: "3be2ce56-4a5f-4034-88d7-2953d1819ed3"
-      #     AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-      #     DATABRICKS_TOKEN: ${{ secrets.ELYON_DBX_TOKEN_PROD }}
-      #     DATABRICKS_BUNDLE_ENV: prod
-      #   run: |
-      #     az login --service-principal \
-      #       --username $ARM_CLIENT_ID \
-      #       --tenant $ARM_TENANT_ID \
-      #       --password $AZURE_CLIENT_SECRET
-      
-      #     export DATABRICKS_HOST="https://https://adb-1055291633315799.19.azuredatabricks.net/"
-      
-      #     databricks auth login --host $DATABRICKS_HOST
+      - name: Azure Login
+        uses: Azure/login@v2.2.0
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: "3be2ce56-4a5f-4034-88d7-2953d1819ed3"
 
-
-        
-        
-      # - name: Configure Databricks CLI
-      #   env:
-      #     DATABRICKS_HOST: https://adb-1432846341870043.3.azuredatabricks.net
-      #     DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_DEV }}
-        
-      #   run: |
-      #       databricks configure --token <<EOF
-      #       $DATABRICKS_HOST
-      #       $DATABRICKS_TOKEN
-      #       EOF
+      - name: Get AAD Token
+        run: |
+          az account get-access-token --resource https://management.azure.com --query accessToken -o tsv > aad_token.txt
+          export AAD_TOKEN=$(cat aad_token.txt)
+          echo "AAD Token generated and saved to environment variable."
+        env:
+          AAD_TOKEN: ${{ secrets.AZURE_CLIENT_SECRET }}
 
       - name: Create Key Vault-Backed Secret Scope
         run: |
+          export DATABRICKS_TOKEN=$(cat aad_token.txt)
           databricks secrets create-scope dbxsecrets1 \
             --scope-backend-type AZURE_KEYVAULT \
-            --resource-id /subscriptions/3be2ce56-4a5f-4034-88d7-2953d1819ed3/resourceGroups/commonResources/providers/Microsoft.KeyVault/vaults/keyvault-forgeneraluse \
-            --dns-name https://keyvault-forgeneraluse.vault.azure.net \
+            --resource-id subscriptions/1943f6e4-c483-433c-a82b-cc02e45ad73c/resourceGroups/datagame/providers/Microsoft.KeyVault/vaults/kv-clint-generic \
+            --dns-name https://kv-clint-generic.vault.azure.net \
             --initial-manage-principal users
+            --userAADToken $AAD_TOKEN
+        env:
+          DATABRICKS_TOKEN: ${{ secrets.ELYON_DBX_TOKEN_PROD }}
 
