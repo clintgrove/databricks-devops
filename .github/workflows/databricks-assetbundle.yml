@@ -39,7 +39,7 @@ jobs:
       - run: databricks bundle deploy
         working-directory: ./budlineclint1
         env:
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_PROD }}
+          DATABRICKS_TOKEN: ${{ secrets.ELYON_DBX_TOKEN_PROD }}
           DATABRICKS_BUNDLE_ENV: prod
 
   # Validate, deploy, and then run the bundle.
@@ -63,5 +63,5 @@ jobs:
       - run: databricks bundle run my-job --refresh-all
         working-directory: ./budlineclint1
         env:
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_PROD }}
+          DATABRICKS_TOKEN: ${{ secrets.ELYON_DBX_TOKEN_PROD }}
           DATABRICKS_BUNDLE_ENV: prod
