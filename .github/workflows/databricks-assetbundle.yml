@@ -42,26 +42,27 @@ jobs:
           DATABRICKS_TOKEN: ${{ secrets.ELYON_DBX_TOKEN_PROD }}
           DATABRICKS_BUNDLE_ENV: prod
 
+# note April 2025 . permissions issue preventing me from running this job. I cannot create cluster apparently
   # Validate, deploy, and then run the bundle.
-  pipeline_update:
-    name: 'Run pipeline update'
-    runs-on: ubuntu-latest
+  # pipeline_update:
+  #   name: 'Run pipeline update'
+  #   runs-on: ubuntu-latest
 
-    # Run the "deploy" job first.
-    needs:
-      - deploy
+  #   # Run the "deploy" job first.
+  #   needs:
+  #     - deploy
 
-    steps:
-      # Check out this repo, so that this workflow can access it.
-      - uses: actions/checkout@v3
+  #   steps:
+  #     # Check out this repo, so that this workflow can access it.
+  #     - uses: actions/checkout@v3
 
-      # Use the downloaded Databricks CLI.
-      - uses: databricks/setup-cli@main
+  #     # Use the downloaded Databricks CLI.
+  #     - uses: databricks/setup-cli@main
 
-      # Run the Databricks workflow named "my-job" as defined in the
-      # bundle that was just deployed.
-      - run: databricks bundle run JOB_CALLADF --refresh-all
-        working-directory: ./budlineclint1
-        env:
-          DATABRICKS_TOKEN: ${{ secrets.ELYON_DBX_TOKEN_PROD }}
-          DATABRICKS_BUNDLE_ENV: prod
+  #     # Run the Databricks workflow named "my-job" as defined in the
+  #     # bundle that was just deployed.
+  #     - run: databricks bundle run JOB_CALLADF --refresh-all
+  #       working-directory: ./budlineclint1
+  #       env:
+  #         DATABRICKS_TOKEN: ${{ secrets.ELYON_DBX_TOKEN_PROD }}
+  #         DATABRICKS_BUNDLE_ENV: prod
