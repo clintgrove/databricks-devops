@@ -37,7 +37,7 @@ jobs:
       # Deploy the bundle to the "qa" target as defined
       # in the bundle's settings file.
       - run: databricks bundle deploy
-        working-directory: .
+        working-directory: ./budlineclint1
         env:
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_PROD }}
           DATABRICKS_BUNDLE_ENV: prod
@@ -61,7 +61,7 @@ jobs:
       # Run the Databricks workflow named "my-job" as defined in the
       # bundle that was just deployed.
       - run: databricks bundle run my-job --refresh-all
-        working-directory: .
+        working-directory: ./budlineclint1
         env:
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_PROD }}
           DATABRICKS_BUNDLE_ENV: prod
