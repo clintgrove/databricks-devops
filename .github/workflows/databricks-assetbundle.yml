@@ -1,7 +1,7 @@
 # https://learn.microsoft.com/en-gb/azure/databricks/dev-tools/bundles/ci-cd-bundles
 # This workflow validates, deploys, and runs the specified bundle
 # within a pre-production target named "qa".
-name: 'Prod deployment'
+name: 'Asset Bundle Prod deployment'
 
 # Ensure that only a single job or workflow using the same concurrency group
 # runs at a time.
