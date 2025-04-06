@@ -67,9 +67,16 @@ jobs:
         env:
           AAD_TOKEN: ${{ secrets.AZURE_CLIENT_SECRET }}
 
-      - name: Create Key Vault-Backed Secret Scope
+      - name: Configure Databricks CLI with AAD Token
         run: |
           export DATABRICKS_TOKEN=$(cat aad_token.txt)
+          echo -e "[DEFAULT]\nhost = $DATABRICKS_HOST\ntoken = $DATABRICKS_TOKEN" > ~/.databrickscfg
+          echo "Databricks CLI configured with AAD token."
+        env:
+          DATABRICKS_HOST: "https://adb-2262937393579434.14.azuredatabricks.net"
+
+      - name: Create Key Vault-Backed Secret Scope
+        run: |
           databricks secrets create-scope --json @dbx-using-cicdtools-githubactions/scope-request.json
         env:
           DATABRICKS_TOKEN: $(cat aad_token.txt)
