@@ -60,7 +60,7 @@ jobs:
 
       # Run the Databricks workflow named "my-job" as defined in the
       # bundle that was just deployed.
-      - run: databricks bundle run my-job --refresh-all
+      - run: databricks bundle run calladf --refresh-all
         working-directory: ./budlineclint1
         env:
           DATABRICKS_TOKEN: ${{ secrets.ELYON_DBX_TOKEN_PROD }}
