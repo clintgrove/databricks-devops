@@ -70,10 +70,7 @@ jobs:
       - name: Create Key Vault-Backed Secret Scope
         run: |
           export DATABRICKS_TOKEN=$(cat aad_token.txt)
-          databricks secrets create-scope dbxsecrets1 \
-            --scope-backend-type AZURE_KEYVAULT \
-            --dns-name https://keyvault-forgeneraluse.vault.azure.net \
-            --initial-manage-principal users
+          databricks secrets create-scope --json @dbx-using-cicdtools-githubactions/scope-request.json
         env:
           DATABRICKS_TOKEN: $(cat aad_token.txt)
 
