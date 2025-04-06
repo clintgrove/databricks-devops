@@ -16,6 +16,7 @@ on:
       - synchronize
     branches:
       - main
+  workflow_dispatch:  
 
 jobs:
   # Used by the "pipeline_update" job to deploy the bundle.
