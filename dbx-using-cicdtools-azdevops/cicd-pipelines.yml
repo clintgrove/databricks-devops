@@ -4,7 +4,7 @@ trigger:
 variables:
   - template: .\env-variables.yml
   - name: notebooksPath
-    value: "dbx-using-cicdtools-azdevops/notebooks"
+    value: "databricks-artifacts/notebooks"
 
 pool:
   vmImage: 'ubuntu-latest'

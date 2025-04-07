@@ -1,4 +1,4 @@
-name: "db1-main"
+name: Databricks Notebooks Deployment
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
     with:
       dbx-env: dev
       resourceGroupName: "dbr-analytics-dev"
-      notebooksPath: "dbx-using-cicdtools-githubactions/notebooks"
+      notebooksPath: "databricks-artifacts/notebooks"
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -28,7 +28,7 @@ jobs:
     with:
       dbx-env: prod
       resourceGroupName: "dbr-analytics-prod"
-      notebooksPath: "dbx-using-cicdtools-githubactions/notebooks"
+      notebooksPath: "databricks-artifacts/notebooks"
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
