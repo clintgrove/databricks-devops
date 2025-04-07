@@ -1,4 +1,4 @@
-# The main job for budlineclint1.
+# The main job for bundlework.
 resources:
   jobs:
     JOB_CALLADF:

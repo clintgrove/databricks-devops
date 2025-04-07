@@ -1,7 +1,7 @@
-# This is a Databricks asset bundle definition for budlineclint1.
+# This is a Databricks asset bundle definition for bundlework.
 # See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
 bundle:
-  name: budlineclint1
+  name: bundlework
   uuid: cec8c6c2-9dc3-4734-b741-e8b49fdab00d
 
 include:

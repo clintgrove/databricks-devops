@@ -37,7 +37,7 @@ jobs:
       # Deploy the bundle to the "qa" target as defined
       # in the bundle's settings file.
       - run: databricks bundle deploy
-        working-directory: ./budlineclint1
+        working-directory: ./bundlework
         env:
           DATABRICKS_TOKEN: ${{ secrets.ELYON_DBX_TOKEN_PROD }}
           DATABRICKS_BUNDLE_ENV: prod
@@ -62,7 +62,7 @@ jobs:
       # Run the Databricks workflow named "my-job" as defined in the
       # bundle that was just deployed.
       - run: databricks bundle run JOB_CALLADF --refresh-all
-        working-directory: ./budlineclint1
+        working-directory: ./bundlework
         env:
           DATABRICKS_TOKEN: ${{ secrets.ELYON_DBX_TOKEN_PROD }}
           DATABRICKS_BUNDLE_ENV: prod

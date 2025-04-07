@@ -3,7 +3,7 @@ setup.py configuration script describing how to build and package this project.
 
 This file is primarily used by the setuptools library and typically should not
 be executed directly. See README.md for how to deploy, test, and run
-the budlineclint1 project.
+the bundlework project.
 """
 
 from setuptools import setup, find_packages
@@ -13,23 +13,23 @@ import sys
 sys.path.append("./src")
 
 import datetime
-import budlineclint1
+import bundlework
 
 local_version = datetime.datetime.utcnow().strftime("%Y%m%d.%H%M%S")
 
 setup(
-    name="budlineclint1",
+    name="bundlework",
     # We use timestamp as Local version identifier (https://peps.python.org/pep-0440/#local-version-identifiers.)
     # to ensure that changes to wheel package are picked up when used on all-purpose clusters
-    version=budlineclint1.__version__ + "+" + local_version,
+    version=bundlework.__version__ + "+" + local_version,
     url="https://databricks.com",
     author="admin@mngenvmcap562520.onmicrosoft.com",
-    description="wheel file based on budlineclint1/src",
+    description="wheel file based on bundlework/src",
     packages=find_packages(where="./src"),
     package_dir={"": "src"},
     entry_points={
         "packages": [
-            "main=budlineclint1.main:main",
+            "main=bundlework.main:main",
         ],
     },
     install_requires=[
