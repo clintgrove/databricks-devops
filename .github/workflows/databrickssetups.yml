@@ -1,3 +1,8 @@
+##########################################
+# This workflow deploys a Databricks secret scope using the Databricks CLI and Azure Key Vault.
+# It uses the Databricks CLI to create a secret scope backed by Azure Key Vault.
+# DO NOT USE. THIS IS A TESTING WORKFLOW. AND IT DOES NOT WORK YET.
+
 name: Deploy Databricks Secret Scope
 
 on:

@@ -46,9 +46,10 @@ jobs:
           az config set extension.use_dynamic_install=yes_without_prompt
           az config set extension.dynamic_install_allow_preview=true
 
-      - name: Install Databricks CLI
-        run: |
-          pip install databricks-cli
+      # - name: Install Databricks CLI
+      #   run: |
+      #     pip install databricks-cli
+      - uses: databricks/setup-cli@main
 
       - name: Configure Databricks CLI
         run: |
