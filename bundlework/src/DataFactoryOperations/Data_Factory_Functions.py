@@ -2,7 +2,7 @@ import logging
 import sys
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-sys.path.append('/Workspace/Users/admin@mngenvmcap562520.onmicrosoft.com/')
+sys.path.append('/Workspace/Users/clintelyonson@gmail.com/')
 from Common.Constants import Constants
 from azure.identity import ClientSecretCredential
 from azure.mgmt.datafactory import DataFactoryManagementClient

@@ -25,7 +25,7 @@ targets:
       # We explicitly specify /Workspace/Users/clintgrove@ to make sure we only have a single copy.
       root_path: /Workspace/productionstuff/${bundle.name}/${bundle.target}
     permissions:
-      - user_name: adornglobal@adornandbloom.co.uk
+      - user_name: clintelyonson@gmail.com
         level: CAN_MANAGE
     run_as:
       user_name: adornglobal@adornandbloom.co.uk 

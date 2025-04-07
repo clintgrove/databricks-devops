@@ -1,0 +1,5 @@
+{
+  "authProfile": "DEFAULT",
+  "serverless": true,
+  "useClusterOverride": false
+}
