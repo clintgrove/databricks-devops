@@ -20,7 +20,7 @@ Workspaces have these folders by default:
 (_Note: When I used my high permissions SPN that is Contributor over my entire Subscription then I could put the "/live" folder at the root level, but when I created a SPN that had limited scope and permission then I had to put it in /Users or /Repos or /Shared._)
 
 # Prerequisites
-- 2 Databricks workspaces. As I have set this up to mimic a Dev to Prod type promotion
+- 2 Databricks workspaces with public access. As I have set this up to mimic a Dev to Prod type promotion
 - The Databricks workspaces need to have Unity Catalog (I set Databricks up on Premium sku)
 - You need access to the Account Dashboard (accounts.azuredatabricks.net)
 - Clone or fork from my repository so that you can make this your own and adjust values where you need to. 
@@ -68,7 +68,7 @@ Go the Databricks dev workspace and navigate to Settings/Identity and access/Ser
 
 You will need the Application ID of the SPN (Add the same SPN that you set up as the Service Connectionn SPN in Azure Devops).
 
-Click on the Service principal and then look for the tab "Secrets". You need to create a secret on EACH databricks workspace, then copy that as you will need to save that secret to your Pipeline Library under the name `databrickstoken-appreg-srvcondevops-dev)` and `databrickstoken-appreg-srvcondevops-prod)` respectively, in the correct Variable groups (see point number 4.1 below).
+Click on the Service principal and then look for the tab "Secrets". You need to create a secret on EACH databricks workspace, then copy that as you will need to save that secret to your Pipeline Library under the name `databrickstoken-appreg-srvcondevops-dev` and `databrickstoken-appreg-srvcondevops-prod` respectively, in the correct Variable groups (see point number 4.1 below).
 
 ![create secret tokens from inside databricks workspace](./images/image.png)
 
@@ -99,8 +99,9 @@ Go to Pipelines/New pipeline. Then select Github yaml, then select the repositor
 
 Then select "Existing yaml file" and look for the ymal file named "cicd-pipelines.yml". 
 
+You will need to adjust the env-variables.yaml file to input your Service Connection names instead of mine. 
 
-_Note to self: Currently the Azure Devops is going through my personal clintgrove organisation. It is deploying to Databricks on my Visual Studio Subscription._ 
+You are now good to go and run the pipeline! Good luck.
 
 -----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -126,9 +127,9 @@ The reason you will **NOT** need a Client secret is because the best way to set 
  
  ### Actions
 
- If you have cloned for forkey my repository then when you navigate to "Actions" tab in your Github Repo, you will see that there is a "workflow" named "db1-main". 
+ If you have cloned or forked my repository then, when you navigate to "Actions" tab in your Github Repo, you might see that there is a "workflow" named "Databricks Notebooks Deployment". This is the workflow associated with the `deploydbx.yml` file. 
  
- This is the workflow you can run without needing to set up anything else, as you would have put in the details in the previous step. 
+ This is the workflow you can run without needing to set up anything else, as you would have put in the client details in the previous step. 
 
  To recap, make sure that you add all of these to the Secrets and varialbes/Actions part (this forms your repository secrets, see above step). Below is a snippet from the yaml file in this repository (deploydbx.yml). It will read from your repository secrets
 
@@ -140,8 +141,26 @@ The reason you will **NOT** need a Client secret is because the best way to set 
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST_DEV}}
 ```
 
-
 _Note to self: (It is deploying to Databricks on Microsoft Non-production.)_
 
  ## Asset Bundles
+### Install and use VS Code Databricks plugin
+If you haven't already, see my video on how to connect to Databricks from Visual Studio Code. 
+https://www.youtube.com/watch?v=kCgAKoMi_xw
+ 
+### Create a bundle project (or adjust the one in this repository)
+ Before you can deploy bundles you need to initialise one. Get started here first - https://learn.microsoft.com/en-us/azure/databricks/dev-tools/bundles/#develop-your-first-databricks-asset-bundle
+
+ Once you run this from within Visual studio code, it should produce a bunch of folders and files. The one that does the magic is the `databricks.yml` file. 
+
+ You will need to adjust the values in this yaml file to suite your enviornments. 
+
+ ### CI/CD for Asset Bundles
+ Now that you have your bundle you can head over to GitHub actions and start to set up the yaml file for CI/CD. 
+
+ This is the yaml file you will be working with `.github/workflows/databricks-assetbundle.yml`
+
+ I think the only thing you will need to do is create a PAT token (I had to create one under my name, I could not get the SPN's secret to do the work) 
+
+ Create a secret for your GitHub actions and name it this `DATABRICKS_TOKEN: ${{ secrets.ELYON_DBX_TOKEN_PROD }}` 
 
