@@ -7,7 +7,7 @@ resources:
       trigger:
         # Run this job every day, exactly one day from the last run; see https://docs.databricks.com/api/workspace/jobs/create#trigger
         periodic:
-          interval: 1
+          interval: 0
           unit: DAYS
 
       email_notifications:
