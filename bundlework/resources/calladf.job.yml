@@ -4,11 +4,11 @@ resources:
     JOB_CALLADF:
       name: JOB_CALLADF
 
-      trigger:
-        # To disable the trigger, set the interval to 0; see https://docs.databricks.com/api/workspace/jobs/create#trigger
-        periodic:
-          interval: 0
-          unit: DAYS
+      # trigger:
+      #   # To disable the trigger, comment it out; see https://docs.databricks.com/api/workspace/jobs/create#trigger
+      #   periodic:
+      #     interval: 0
+      #     unit: DAYS
 
       email_notifications:
         on_failure:
